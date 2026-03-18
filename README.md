@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 Dr. Clinic — Single-Doctor Clinic Website
 
-## Getting Started
+A production-ready, fully editable single-doctor clinic website built with **Next.js 14**, **Drizzle ORM + Neon PostgreSQL**, and the **Healing Teal** design system.
 
-First, run the development server:
+---
+
+## ⚡ 5-Step Setup
+
+### Step 1 — Clone & Install Dependencies
+
+```bash
+git clone <your-repo-url>
+cd hospital
+npm install
+```
+
+### Step 2 — Configure Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in every value:
+
+```bash
+cp .env.example .env.local
+```
+
+Generate the admin password hash using the built-in script:
+
+```bash
+node -e "const b = require('bcryptjs'); b.hash('YOUR_PASSWORD', 12).then(h => console.log(h))"
+```
+
+Paste the output as `ADMIN_PASSWORD_HASH` in `.env.local`.
+
+### Step 3 — Set Up the Database
+
+Push the Drizzle schema to your Neon database:
+
+```bash
+npx drizzle-kit push
+```
+
+Seed the default `settings` row (run once):
+
+```bash
+npx tsx src/db/seed.ts
+```
+
+### Step 4 — Initialize shadcn/ui Components
+
+```bash
+npx shadcn-ui@latest init
+npx shadcn-ui@latest add button card input textarea label dialog toast sheet table tabs switch badge scroll-area
+```
+
+### Step 5 — Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) for the public site.  
+Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login) for the admin panel.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── (public)/          # Public-facing pages
+│   └── (admin)/           # Admin panel pages
+├── components/
+│   ├── layout/            # Navbar, Footer, TopBar
+│   ├── admin/             # Admin UI components
+│   └── accessibility/     # Accessibility toolbar
+├── db/
+│   ├── index.ts           # Drizzle client
+│   └── schema/            # All schema definitions
+├── lib/                   # Utils, auth, email, cloudinary
+├── emails/                # React Email templates
+└── middleware.ts           # Route protection
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🔐 Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See `.env.example` for a full list. Required at minimum:
+- `DATABASE_URL` — Neon PostgreSQL connection string
+- `ADMIN_EMAIL` — Doctor's login email
+- `ADMIN_PASSWORD_HASH` — bcrypt hash of the login password
+- `SESSION_SECRET` — 32+ character random string for iron-session
+- `CLOUDINARY_*` — Cloudinary credentials for image uploads
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy to **Vercel** with zero configuration. Set all environment variables in the Vercel dashboard. The `DATABASE_URL` from Neon works perfectly in serverless environments.

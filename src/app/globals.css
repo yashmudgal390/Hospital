@@ -2,26 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 172 100% 98%; /* #F8FFFE */
+    --foreground: 195 34% 15%; /* #1A2E35 */
+    --card: 0 0% 100%;
+    --card-foreground: 195 34% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 195 34% 15%;
+    --primary: 187 85% 29%; /* #0B7B8A */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 172 82% 39%; /* #12B5A0 */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 215 16% 47%; /* #64748B */
+    --muted-foreground: 215 16% 47%;
+    --accent: 38 92% 50%; /* #F59E0B */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%; /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 175 48% 91%; /* #E0F2F1 */
+    --input: 175 48% 91%;
+    --ring: 172 82% 39%;
+    --radius: 0.5rem;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ─────────────────────────────────────────────────────────
+   Accessibility Overrides 
+───────────────────────────────────────────────────────── */
+html.high-contrast {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --primary: 60 100% 50%; /* Yellow */
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 100%;
+  --secondary-foreground: 0 0% 0%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --border: 0 0% 100%;
+  --muted: 0 0% 80%;
+}
+
+html.high-contrast body {
+  @apply bg-black text-white selection:bg-yellow-400 selection:text-black;
+}
+
+html.high-contrast * {
+  @apply border-white;
+}
+
+html.font-dyslexic * {
+  font-family: "Comic Sans MS", "OpenDyslexic", sans-serif !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.6 !important;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Custom Editor Content Styles (TipTap Blog)
+───────────────────────────────────────────────────────── */
+.ProseMirror {
+  @apply outline-none min-h-[300px];
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.rendered-content h1 {
+  @apply text-3xl font-heading font-bold mt-8 mb-4 text-brand-text;
+}
+.rendered-content h2 {
+  @apply text-2xl font-heading font-semibold mt-8 mb-4 text-brand-text;
+}
+.rendered-content h3 {
+  @apply text-xl font-heading font-semibold mt-6 mb-3 text-brand-text;
+}
+.rendered-content p {
+  @apply text-brand-text/90 leading-relaxed mb-4;
+}
+.rendered-content ul {
+  @apply list-disc list-inside mb-4 space-y-2;
+}
+.rendered-content ol {
+  @apply list-decimal list-inside mb-4 space-y-2;
+}
+.rendered-content li {
+  @apply text-brand-text/90 leading-relaxed pl-2;
+}
+.rendered-content a {
+  @apply text-brand-secondary hover:underline font-medium;
+}
+.rendered-content img {
+  @apply rounded-xl max-w-full h-auto my-6 shadow-md border border-brand-border mx-auto;
+}
+.rendered-content blockquote {
+  @apply border-l-4 border-brand-secondary pl-4 py-1 italic bg-brand-bg/50 rounded-r-lg my-6 text-brand-muted;
 }
