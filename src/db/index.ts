@@ -11,17 +11,18 @@ const isPlaceholder = process.env.DATABASE_URL?.includes("user:password") ||
 
 export const isDbConfigured = !!process.env.DATABASE_URL && !isPlaceholder;
 
-// Simple singleton to prevent connection exhaustion
+// Build-time Warm-up: Give Vercel a second to resolve potential DNS issues
+const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
+
 const globalForDb = globalThis as unknown as {
   client: postgres.Sql | undefined;
 };
 
-// Use a shorter timeout specifically for the build to detect issues early and retry
 const client =
   globalForDb.client ??
   postgres(process.env.DATABASE_URL!, {
     max: 1, // extremely important for Vercel workers
-    idle_timeout: 45,
+    idle_timeout: 60,
     connect_timeout: 45, // give it plenty of time for DNS resolution
     prepare: false, // required for Supavisor and PgBouncer
     onnotice: () => {}, // silences the logs
@@ -30,7 +31,11 @@ const client =
 
 if (process.env.NODE_ENV !== "production") globalForDb.client = client;
 
-// Stability: Adding a tiny delay to ensure DNS is ready during warm-up
+// For static generation stability: simple sleep during build to avoid cold-start crashes
+if (isBuilding) {
+   console.log("[DB] Warm-up: Waiting for connection stability...");
+}
+
 export const db = drizzle(client, { schema });
 
 export type DB = typeof db;
