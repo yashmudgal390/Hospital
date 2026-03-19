@@ -83,8 +83,6 @@ export const getHomeSettings = async () => {
       doctorTitle: settings.doctorTitle,
       doctorExperience: settings.doctorExperience,
       doctorBio: settings.doctorBio,
-      tagline: settings.tagline,
-      doctorSpecialty: settings.doctorSpecialty,
     }).from(settings).limit(1);
     return res ?? null;
   } catch (e) {

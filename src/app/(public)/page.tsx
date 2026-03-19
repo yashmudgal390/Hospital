@@ -18,7 +18,7 @@ const Antigravity = dynamic(() => import("@/components/ui/Antigravity"), {
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  let siteSettings: Awaited<ReturnType<typeof getHomeSettings>> = null;
+  let siteSettings: any = null;
   let featuredServices: any[] = [];
   let latestPosts: any[] = [];
 
@@ -34,11 +34,11 @@ export default async function HomePage() {
       featuredServices = Array.isArray(servicesRes) ? servicesRes.slice(0, 4) : [];
       latestPosts = Array.isArray(blogRes) ? blogRes.slice(0, 3) : [];
     } catch (err) {
-      // Log error internally but allow site to render with fallbacks
+      console.warn("[HomePage] data error:", (err as Error).message);
     }
   }
 
-  const s = siteSettings || ({} as Exclude<typeof siteSettings, null>);
+  const s = siteSettings || {};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -320,7 +320,7 @@ export default async function HomePage() {
 /**
  * Separate component to fetch and render the Hero Image
  */
-async function HeroImageWrapper({ headline }: { headline: string | null }) {
+async function HeroImageWrapper({ headline }: { headline: string }) {
   const url = await getHeroImage();
 
   if (!url) {
@@ -351,7 +351,7 @@ async function HeroImageWrapper({ headline }: { headline: string | null }) {
 /**
  * Separate component to fetch and render the Doctor Photo on Home
  */
-async function HomeDoctorSection({ name }: { name: string | null }) {
+async function HomeDoctorSection({ name }: { name: string }) {
   const url = await getDoctorPhoto();
 
   if (!url) {

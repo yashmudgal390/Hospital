@@ -17,13 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  let siteSettings: Awaited<ReturnType<typeof getClinicSettings>> = null;
+  let s: any = null;
 
   if (isDbConfigured) {
-    siteSettings = await getClinicSettings();
+    s = await getClinicSettings();
   }
 
-  const s = siteSettings || ({} as Exclude<typeof siteSettings, null>);
+  if (!s) s = {};
 
   // Parse JSON qualifications safely
   let qualifications: string[] = [];
@@ -111,7 +111,7 @@ export default async function AboutPage() {
                         <Loader2 className="h-10 w-10 text-brand-primary/20 animate-spin" />
                       </div>
                     }>
-                      <DoctorImageWrapper name={s.doctorName || ""} />
+                      <DoctorImageWrapper name={s.doctorName} />
                     </Suspense>
                 </div>
               </div>
