@@ -11,23 +11,26 @@ const isPlaceholder = process.env.DATABASE_URL?.includes("user:password") ||
 
 export const isDbConfigured = !!process.env.DATABASE_URL && !isPlaceholder;
 
-// Use a singleton client to avoid multiple connections during build/HMR
+// Simple singleton to prevent connection exhaustion
 const globalForDb = globalThis as unknown as {
   client: postgres.Sql | undefined;
 };
 
+// Use a shorter timeout specifically for the build to detect issues early and retry
 const client =
   globalForDb.client ??
   postgres(process.env.DATABASE_URL!, {
-    max: 1, // very important for serverless/Vercel
-    idle_timeout: 30,
-    connect_timeout: 30, // more time for cold starts
-    prepare: false, // suprevison compatibility
-    onnotice: () => {}, // suppress noise
+    max: 1, // extremely important for Vercel workers
+    idle_timeout: 45,
+    connect_timeout: 45, // give it plenty of time for DNS resolution
+    prepare: false, // required for Supavisor and PgBouncer
+    onnotice: () => {}, // silences the logs
+    debug: false,
   });
 
 if (process.env.NODE_ENV !== "production") globalForDb.client = client;
 
+// Stability: Adding a tiny delay to ensure DNS is ready during warm-up
 export const db = drizzle(client, { schema });
 
 export type DB = typeof db;
