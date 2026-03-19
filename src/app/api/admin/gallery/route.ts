@@ -18,11 +18,25 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
+    const { 
+      imageUrl, cloudinaryPublicId, altText, 
+      caption, category, sortOrder, isActive 
+    } = body;
+    
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Image URL is required." }, { status: 400 });
+    }
+
     const [newPhoto] = await db
       .insert(gallery)
       .values({
-        ...body,
-        createdAt: new Date(),
+        imageUrl,
+        cloudinaryPublicId,
+        altText: altText || "",
+        caption,
+        category: category || "General",
+        sortOrder: sortOrder || 0,
+        isActive: isActive !== undefined ? isActive : true,
       })
       .returning();
     
