@@ -110,24 +110,64 @@ export function GalleryUploader({
           )}
         </div>
       ) : (
-        <div 
-          {...getRootProps()} 
-          className={`
-            border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300
-            hover:bg-brand-50 hover:border-brand-primary/50 group
-            ${isDragActive ? 'border-brand-primary bg-brand-50 scale-[1.02]' : 'border-brand-border/80'}
-          `}
-        >
-          <input {...getInputProps()} />
-          <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-brand-100 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
-            <UploadCloud className="h-8 w-8" />
+        <div className="space-y-4">
+          <div 
+            {...getRootProps()} 
+            className={`
+              border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300
+              hover:bg-brand-50 hover:border-brand-primary/50 group
+              ${isDragActive ? 'border-brand-primary bg-brand-50 scale-[1.02]' : 'border-brand-border/80'}
+            `}
+          >
+            <input {...getInputProps()} />
+            <div className="mx-auto w-12 h-12 mb-3 rounded-full bg-brand-100 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
+              <UploadCloud className="h-6 w-6" />
+            </div>
+            <p className="text-brand-text text-sm font-medium mb-1">
+              {isDragActive ? "Drop image here..." : "Drag & drop or Click to upload"}
+            </p>
+            <p className="text-[10px] text-brand-muted">
+              JPG, PNG, WEBP (Max 5MB)
+            </p>
           </div>
-          <p className="text-brand-text font-medium mb-1">
-            {isDragActive ? "Drop image here..." : "Drag & drop an image, or click to select"}
-          </p>
-          <p className="text-xs text-brand-muted">
-            Supports JPG, PNG, WEBP (Max 5MB)
-          </p>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-brand-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-brand-muted font-medium">Or Use External Link</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-muted" />
+              <input 
+                type="text"
+                placeholder="https://example.com/photo.jpg"
+                className="w-full h-10 pl-9 pr-4 rounded-xl border border-brand-border text-xs focus:ring-1 focus:ring-brand-primary outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const url = (e.target as HTMLInputElement).value;
+                    if (url.startsWith('http')) {
+                      setPreview(url);
+                      onUploadSuccess(url, "external");
+                      toast.success("Image link added!");
+                    }
+                  }
+                }}
+                onBlur={(e) => {
+                  const url = e.target.value;
+                  if (url.startsWith('http')) {
+                    setPreview(url);
+                    onUploadSuccess(url, "external");
+                    toast.success("Image link added!");
+                  }
+                }}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
