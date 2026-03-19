@@ -52,15 +52,32 @@ export async function PUT(req: Request) {
       }
     });
 
-    mergedData.id = "main";
-    mergedData.updatedAt = new Date();
+    // Define the valid fields based on the schema to prevent DB errors
+    const validFields = [
+      "clinicName", "tagline", "logoUrl", "faviconUrl",
+      "doctorName", "doctorTitle", "doctorSpecialty", "doctorBio", "doctorPhotoUrl", "doctorExperience", "doctorQualifications",
+      "phone", "whatsapp", "email", "address", "mapEmbedUrl",
+      "operatingHours", "facebook", "instagram", "twitter", "youtube", "linkedin",
+      "heroHeadline", "heroSubheadline", "heroImageUrl", "heroCTAText", "heroCTALink",
+      "aboutText", "aboutImageUrl", "missionText", "visionText",
+      "emergencyPhone", "emergencyNote", "showEmergencyBanner",
+      "metaTitle", "metaDescription", "metaKeywords", "ogImageUrl", "googleAnalyticsId",
+      "appointmentsEnabled"
+    ];
+
+    const cleanData: any = { id: "main", updatedAt: new Date() };
+    validFields.forEach(field => {
+       if (mergedData[field] !== undefined) {
+         cleanData[field] = mergedData[field];
+       }
+    });
 
     const [updated] = await db
       .insert(settings)
-      .values(mergedData)
+      .values(cleanData)
       .onConflictDoUpdate({
         target: settings.id,
-        set: mergedData,
+        set: cleanData,
       })
       .returning();
 

@@ -17,26 +17,14 @@ export default async function AdminLayout({
 }>) {
   const session = await getAdminSession();
   
-  // We cannot use usePathname in a server component. 
-  // We can loosely check if the current path is NOT login by examining headers if needed,
-  // but a simpler approach is handling unprotected routes in middleware.
-  // Our middleware already protects `/admin` routes.
-  // However, `AdminLayout` wraps the ENTIRE `(admin)` group, which includes `/admin/login`.
-  // We ONLY want to show the Sidebar if they are actually logged in.
-  const pathname = headers().get("x-pathname") || "";
-  const isLoginPage = pathname === "/admin/login";
-
-  if (isLoginPage) {
+  // Resilient check: We only want to show the Sidebar if they are actually logged in.
+  // We can skip the sidebar and layout structure if they are on the login form.
+  if (!session?.isAdmin) {
     return (
       <div className="min-h-screen bg-brand-bg flex items-center justify-center font-sans">
         {children}
       </div>
     );
-  }
-
-  // If not on login, enforce session presence just in case middleware fails
-  if (!session?.isAdmin) {
-    redirect("/admin/login");
   }
 
   return (
