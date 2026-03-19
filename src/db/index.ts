@@ -11,11 +11,22 @@ const isPlaceholder = process.env.DATABASE_URL?.includes("user:password") ||
 
 export const isDbConfigured = !!process.env.DATABASE_URL && !isPlaceholder;
 
-const client = postgres(process.env.DATABASE_URL!, {
-  max: 1,              // important for serverless
-  idle_timeout: 20,
-  connect_timeout: 10,
-});
+// Use a singleton client to avoid multiple connections during build/HMR
+const globalForDb = globalThis as unknown as {
+  client: postgres.Sql | undefined;
+};
+
+const client =
+  globalForDb.client ??
+  postgres(process.env.DATABASE_URL!, {
+    max: 1, // very important for serverless/Vercel
+    idle_timeout: 30,
+    connect_timeout: 30, // more time for cold starts
+    prepare: false, // suprevison compatibility
+    onnotice: () => {}, // suppress noise
+  });
+
+if (process.env.NODE_ENV !== "production") globalForDb.client = client;
 
 export const db = drizzle(client, { schema });
 
