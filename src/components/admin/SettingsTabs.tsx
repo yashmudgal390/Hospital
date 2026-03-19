@@ -90,8 +90,8 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
           <TabsContent value="general" className="space-y-8 mt-0 outline-none">
              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                   <Field id="clinicName" label="Clinic Name" placeholder="Healing Medical Center" />
-                   <Field id="tagline" label="Tagline" placeholder="Compassionate Care for the Whole Family" />
+                   <Field id="clinicName" label="Clinic Name" placeholder="Enter Clinic/Hospital Name" />
+                   <Field id="tagline" label="Tagline" placeholder="Briefly describe your mission" />
                    
                    <div className="flex flex-col gap-4 p-4 border border-brand-border bg-brand-50 rounded-xl">
                       <div className="flex items-center justify-between">
@@ -121,8 +121,8 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                 
                 <div className="space-y-6 mt-6 md:mt-0 p-6 bg-brand-50 rounded-2xl border border-brand-border">
                    <h3 className="font-heading font-semibold text-lg text-brand-text mb-4">Homepage Hero Content</h3>
-                   <Field id="heroHeadline" label="Headline" placeholder="Your Health, Our Priority" />
-                   <Field id="heroSubheadline" label="Subheadline" placeholder="Providing quality healthcare..." textarea />
+                   <Field id="heroHeadline" label="Headline" placeholder="Main Marketing Headline" />
+                   <Field id="heroSubheadline" label="Subheadline" placeholder="Detailed description for the hero section..." textarea />
                    <div className="grid grid-cols-2 gap-4">
                       <Field id="heroCTAText" label="Button Text" placeholder="Book Appointment" />
                       <Field id="heroCTALink" label="Button Link" placeholder="/contact" />

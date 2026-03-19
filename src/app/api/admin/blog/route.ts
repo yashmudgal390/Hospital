@@ -12,9 +12,16 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
+    // Ensure date fields are real Date objects for the DB driver
+    const insertData = {
+      ...body,
+      publishedAt: body.publishedAt ? new Date(body.publishedAt) : null,
+      updatedAt: new Date(),
+    };
+
     const [newPost] = await db
       .insert(blog)
-      .values(body)
+      .values(insertData)
       .returning();
     
     revalidateTag("blog");

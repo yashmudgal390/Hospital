@@ -60,7 +60,7 @@ export function Footer({ settings, services }: FooterProps) {
                     {(settings?.clinicName || "H").charAt(0)}
                   </div>
                   <span className="font-heading font-bold text-xl tracking-tight text-white group-hover:text-brand-200 transition-colors">
-                    {settings?.clinicName || "Hospital"}
+                    {settings?.clinicName}
                   </span>
                 </div>
               )}

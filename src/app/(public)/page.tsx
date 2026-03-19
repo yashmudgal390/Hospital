@@ -68,10 +68,12 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8 animate-slide-in-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill bg-brand-surface border border-brand-border text-sm font-medium text-brand-primary shadow-sm mb-4">
-                <HeartPulse className="h-4 w-4" />
-                <span>Trusted Healthcare Excellence</span>
-              </div>
+              {s.tagline && (
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill bg-brand-surface border border-brand-border text-sm font-medium text-brand-primary shadow-sm mb-4">
+                  <HeartPulse className="h-4 w-4" />
+                  <span>{s.tagline}</span>
+                </div>
+              )}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-brand-text leading-tight whitespace-pre-line">
                 {s.heroHeadline}
               </h1>
@@ -86,46 +88,28 @@ export default async function HomePage() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="rounded-pill px-8 h-14 text-base border-brand-primary/20 text-brand-text hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all bg-white/50 backdrop-blur-sm">
-                  <Link href="/about">Meet {s.doctorName || 'Doctor'}</Link>
+                  <Link href="/about">About Us</Link>
                 </Button>
               </div>
 
               {/* Added subtle features to fill space */}
               <div className="grid grid-cols-2 gap-y-4 gap-x-8 pt-8 border-t border-brand-border/30">
+                {s.doctorSpecialty && (
+                   <div className="flex items-center gap-3 group">
+                    <div className="h-10 w-10 flex items-center justify-center text-brand-primary">
+                      <CheckCircle2 className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-brand-text">{s.doctorSpecialty}</span>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-3 group">
-                  <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors duration-300">
+                  <div className="h-10 w-10 flex items-center justify-center text-brand-primary">
                     <HeartPulse className="h-5 w-5" />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-brand-text">Personalized Care</span>
-                    <span className="text-xs text-brand-muted">Tailored to your needs</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 group">
-                  <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors duration-300">
-                    <TrendingUp className="h-5 w-5" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-brand-text">Modern Tech</span>
-                    <span className="text-xs text-brand-muted">Advanced equipment</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 group">
-                  <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors duration-300">
-                    <Clock className="h-5 w-5" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-brand-text">Flexible Hours</span>
-                    <span className="text-xs text-brand-muted">Open 6 days a week</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 group">
-                  <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors duration-300">
-                    <CheckCircle2 className="h-5 w-5" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-brand-text">Verified Expert</span>
-                    <span className="text-xs text-brand-muted">Board certified surgeon</span>
                   </div>
                 </div>
               </div>

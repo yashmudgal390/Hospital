@@ -40,7 +40,9 @@ export default async function AboutPage() {
       {/* Header */}
       <section className="bg-brand-bg pt-20 pb-16 border-b border-brand-border text-center">
         <div className="container mx-auto px-4 md:px-6">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-text mb-4">About the Hospital</h1>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-text mb-4">
+            {s.clinicName ? `About ${s.clinicName}` : "About Us"}
+          </h1>
           <p className="text-lg text-brand-muted max-w-2xl mx-auto">
             {s.tagline}
           </p>
@@ -63,14 +65,6 @@ export default async function AboutPage() {
                 <AboutImageWrapper />
               </Suspense>
               
-              {/* Floating Stat */}
-              <div className="absolute -bottom-8 right-8 bg-white p-6 rounded-xl shadow-dropdown border border-brand-border z-20 flex items-center gap-4">
-                <Award className="h-10 w-10 text-brand-amber" />
-                <div>
-                  <div className="font-heading font-bold text-2xl text-brand-text">Top Rated</div>
-                  <div className="text-brand-muted text-sm font-medium">Healthcare Facility</div>
-                </div>
-              </div>
             </div>
 
             {/* Text Side */}

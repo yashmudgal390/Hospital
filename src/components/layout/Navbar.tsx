@@ -90,7 +90,7 @@ export function Navbar({ settings }: NavbarProps) {
               </div>
             )}
             <span className="font-heading font-bold text-xl md:text-2xl text-brand-text tracking-tight group-hover:text-brand-primary transition-colors">
-              {settings?.clinicName || "Hospital"}
+              {settings?.clinicName}
             </span>
           </Link>
 

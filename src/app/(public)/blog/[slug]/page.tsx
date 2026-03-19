@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: post.metaTitle || `${post.title} | Health Blog`,
+    title: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
   };
 }
@@ -43,7 +43,8 @@ export default async function BlogPostPage({ params }: Props) {
   } catch (e) {}
 
   // A generic absolute URL for sharing
-  const shareUrl = `https://example.com/blog/${params.slug}`;
+  // A generic absolute URL for sharing
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = encodeURIComponent(post.title);
 
   return (
@@ -85,14 +86,20 @@ export default async function BlogPostPage({ params }: Props) {
 
           <div className="flex items-center justify-between border-t border-b border-brand-border py-6 mt-10">
             <div className="flex items-center gap-4">
-              <img 
-                src={s?.doctorPhotoUrl || `https://i.pravatar.cc/150?u=${s?.doctorName}`} 
-                alt={s?.doctorName || "Doctor"} 
-                className="h-12 w-12 rounded-full object-cover border-2 border-brand-primary/20"
-              />
+              {s?.doctorPhotoUrl ? (
+                <img 
+                  src={s.doctorPhotoUrl} 
+                  alt={s.doctorName || ""} 
+                  className="h-12 w-12 rounded-full object-cover border-2 border-brand-primary/20"
+                />
+              ) : (
+                <div className="h-12 w-12 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary border-2 border-brand-primary/20 font-bold">
+                  {(s?.doctorName || s?.clinicName || "D").charAt(0)}
+                </div>
+              )}
               <div>
-                <div className="font-semibold text-brand-text leading-tight">{s?.doctorName || "Staff"}</div>
-                <div className="text-xs text-brand-muted">{s?.doctorTitle || "Medical Professional"}</div>
+                <div className="font-semibold text-brand-text leading-tight">{s?.doctorName}</div>
+                <div className="text-xs text-brand-muted">{s?.doctorTitle}</div>
               </div>
             </div>
             

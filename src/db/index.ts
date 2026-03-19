@@ -1,5 +1,5 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
 if (!process.env.DATABASE_URL) {
@@ -11,8 +11,12 @@ const isPlaceholder = process.env.DATABASE_URL?.includes("user:password") ||
 
 export const isDbConfigured = !!process.env.DATABASE_URL && !isPlaceholder;
 
-const sql = neon(process.env.DATABASE_URL!);
+const client = postgres(process.env.DATABASE_URL!, {
+  max: 1,              // important for serverless
+  idle_timeout: 20,
+  connect_timeout: 10,
+});
 
-export const db = drizzle(sql, { schema });
+export const db = drizzle(client, { schema });
 
 export type DB = typeof db;
