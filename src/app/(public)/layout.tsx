@@ -6,7 +6,7 @@ import { isDbConfigured } from "@/db";
 import { getClinicSettings, getLayoutSettings } from "@/lib/settings";
 import { getNavServices } from "@/lib/services";
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export default async function PublicLayout({
   children,

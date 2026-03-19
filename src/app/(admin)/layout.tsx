@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/Sidebar";
 import { redirect } from "next/navigation";

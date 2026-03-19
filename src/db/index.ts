@@ -21,20 +21,15 @@ const globalForDb = globalThis as unknown as {
 const client =
   globalForDb.client ??
   postgres(process.env.DATABASE_URL!, {
-    max: 1, // extremely important for Vercel workers
+    max: isBuilding ? 1 : 5, // restrict to 1 during build
     idle_timeout: 60,
-    connect_timeout: 45, // give it plenty of time for DNS resolution
+    connect_timeout: 60, // give it plenty of time for DNS resolution
     prepare: false, // required for Supavisor and PgBouncer
     onnotice: () => {}, // silences the logs
     debug: false,
   });
 
 if (process.env.NODE_ENV !== "production") globalForDb.client = client;
-
-// For static generation stability: simple sleep during build to avoid cold-start crashes
-if (isBuilding) {
-   console.log("[DB] Warm-up: Waiting for connection stability...");
-}
 
 export const db = drizzle(client, { schema });
 
