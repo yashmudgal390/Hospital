@@ -8,32 +8,41 @@ export function cn(...inputs: ClassValue[]) {
 
 /** Format a date string to a human-readable locale string */
 export function formatDate(
-  date: string | Date,
+  date: string | Date | null | undefined,
   options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "long",
     day: "numeric",
   }
 ): string {
+  if (!date) return "Recently";
   const d = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(d.getTime())) return "Recently";
   return d.toLocaleDateString("en-US", options);
 }
 
 /** Format a date to relative time (e.g., "3 days ago") */
-export function formatRelativeTime(date: string | Date): string {
+export function formatRelativeTime(date: string | Date | null | undefined): string {
+  if (!date) return "Recently";
   const d = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(d.getTime())) return "Recently";
+  
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
   const diffSecs = Math.floor(diffMs / 1000);
   const diffMins = Math.floor(diffSecs / 60);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
 
-  if (diffSecs < 60) return "just now";
-  if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? "s" : ""} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
-  if (diffDays < 30) return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
-  return formatDate(d);
+  if (diffMonths >= 12) return `${diffYears} year${diffYears !== 1 ? "s" : ""} ago`;
+  if (diffDays >= 30) return `${diffMonths} month${diffMonths !== 1 ? "s" : ""} ago`;
+  if (diffHours >= 24) return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
+  if (diffMins >= 60) return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
+  if (diffSecs >= 60) return `${diffMins} minute${diffMins !== 1 ? "s" : ""} ago`;
+  
+  return "just now";
 }
 
 /** Generate an SEO-friendly slug from a string */
