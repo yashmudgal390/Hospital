@@ -18,19 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function GalleryPage() {
-  let photos: any[] = [];
-  if (isDbConfigured) {
-    photos = await getGalleryImages();
-  }
-
-  // Group photos by category
-  const categories: Record<string, typeof photos> = {};
-  photos.forEach((photo) => {
-    const cat = photo.category || "General";
-    if (!categories[cat]) categories[cat] = [];
-    categories[cat].push(photo);
-  });
-
   return (
     <>
       <section className="bg-brand-bg pt-20 pb-16 border-b border-brand-border text-center">
