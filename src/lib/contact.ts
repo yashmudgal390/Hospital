@@ -1,9 +1,10 @@
 import { unstable_cache } from "next/cache"
-import { db } from "@/db"
+import { db, isDbConfigured } from "@/db"
 import { settings } from "@/db/schema/settings"
 
 export const getContactInfo = unstable_cache(
   async () => {
+    if (!isDbConfigured) return null;
     try {
       const result = await db.select({
         clinicName: settings.clinicName,

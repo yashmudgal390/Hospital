@@ -2,14 +2,9 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is not set");
-}
-
-const isPlaceholder = process.env.DATABASE_URL?.includes("user:password") || 
-                      process.env.DATABASE_URL?.includes("host/dbname");
-
-export const isDbConfigured = !!process.env.DATABASE_URL && !isPlaceholder;
+const dbUrl = process.env.DATABASE_URL || "";
+const isPlaceholder = dbUrl.includes("user:password") || dbUrl.includes("host/dbname");
+export const isDbConfigured = !!dbUrl && !isPlaceholder;
 
 // Build-time Warm-up: Give Vercel a second to resolve potential DNS issues
 const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
@@ -18,18 +13,27 @@ const globalForDb = globalThis as unknown as {
   client: postgres.Sql | undefined;
 };
 
-const client =
-  globalForDb.client ??
-  postgres(process.env.DATABASE_URL!, {
-    max: isBuilding ? 1 : 5, // restrict to 1 during build
-    idle_timeout: 10,
-    connect_timeout: 2, // 2-second hard cutoff for UX
-    prepare: false, // required for Supavisor and PgBouncer
-    onnotice: () => {}, // silences the logs
-    debug: false,
-  });
-
-if (process.env.NODE_ENV !== "production") globalForDb.client = client;
+// Lazy initialization of the postgres client to prevent module-import crashes
+let client: postgres.Sql;
+try {
+  if (isDbConfigured) {
+    client = globalForDb.client ?? postgres(dbUrl, {
+      max: isBuilding ? 1 : 5, 
+      idle_timeout: 10,
+      connect_timeout: 2, 
+      prepare: false, 
+      onnotice: () => {}, 
+      debug: false,
+    });
+    if (process.env.NODE_ENV !== "production") globalForDb.client = client;
+  } else {
+    // Return a dummy client that doesn't crash on import
+    client = postgres("postgres://localhost/placeholder", { max: 1 });
+  }
+} catch (e) {
+  // Final fallback to prevent any module-level exceptions
+  client = postgres("postgres://localhost/placeholder", { max: 1 });
+}
 
 export const db = drizzle(client, { schema });
 

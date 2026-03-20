@@ -1,10 +1,11 @@
 import { unstable_cache } from "next/cache"
-import { db } from "@/db"
+import { db, isDbConfigured } from "@/db"
 import { services } from "@/db/schema/services"
 import { eq, asc } from "drizzle-orm"
 
 export const getServices = unstable_cache(
   async () => {
+    if (!isDbConfigured) return [];
     try {
       return await db.select().from(services)
         .where(eq(services.isActive, true))
@@ -20,6 +21,7 @@ export const getServices = unstable_cache(
 
 export const getServiceBySlug = unstable_cache(
   async (slug: string) => {
+    if (!isDbConfigured) return null;
     try {
       const result = await db.select().from(services)
         .where(eq(services.slug, slug))
@@ -36,6 +38,7 @@ export const getServiceBySlug = unstable_cache(
 
 export const getNavServices = unstable_cache(
   async () => {
+    if (!isDbConfigured) return [];
     try {
       return await db
         .select({ name: services.name, slug: services.slug })
