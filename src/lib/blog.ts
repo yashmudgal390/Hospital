@@ -5,9 +5,14 @@ import { eq, desc, and, ne } from "drizzle-orm"
 
 export const getBlogPosts = unstable_cache(
   async () => {
-    return await db.select().from(blog)
-      .where(eq(blog.isPublished, true))
-      .orderBy(desc(blog.publishedAt))
+    try {
+      return await db.select().from(blog)
+        .where(eq(blog.isPublished, true))
+        .orderBy(desc(blog.publishedAt))
+    } catch (e) {
+      console.error("[getBlogPosts] Error:", e);
+      return [];
+    }
   },
   ["blog-posts"],
   { revalidate: 3600, tags: ["blog"] }
@@ -15,10 +20,15 @@ export const getBlogPosts = unstable_cache(
 
 export const getBlogPostBySlug = unstable_cache(
   async (slug: string) => {
-    const result = await db.select().from(blog)
-      .where(eq(blog.slug, slug))
-      .limit(1)
-    return result[0] ?? null
+    try {
+      const result = await db.select().from(blog)
+        .where(eq(blog.slug, slug))
+        .limit(1)
+      return result[0] ?? null
+    } catch (e) {
+      console.error("[getBlogPostBySlug] Error:", e);
+      return null;
+    }
   },
   ["blog-post-detail"],
   { revalidate: 3600, tags: ["blog"] }
@@ -26,17 +36,22 @@ export const getBlogPostBySlug = unstable_cache(
 
 export const getRelatedPosts = unstable_cache(
   async (excludedId: string) => {
-    return await db
-      .select({
-        title: blog.title,
-        slug: blog.slug,
-        coverImageUrl: blog.coverImageUrl,
-        publishedAt: blog.publishedAt,
-      })
-      .from(blog)
-      .where(and(eq(blog.isPublished, true), ne(blog.id, excludedId)))
-      .orderBy(desc(blog.publishedAt))
-      .limit(3);
+    try {
+      return await db
+        .select({
+          title: blog.title,
+          slug: blog.slug,
+          coverImageUrl: blog.coverImageUrl,
+          publishedAt: blog.publishedAt,
+        })
+        .from(blog)
+        .where(and(eq(blog.isPublished, true), ne(blog.id, excludedId)))
+        .orderBy(desc(blog.publishedAt))
+        .limit(3);
+    } catch (e) {
+      console.error("[getRelatedPosts] Error:", e);
+      return [];
+    }
   },
   ["related-posts"],
   { revalidate: 3600, tags: ["blog"] }
