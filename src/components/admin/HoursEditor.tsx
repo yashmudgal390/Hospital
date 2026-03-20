@@ -67,6 +67,8 @@ export function HoursEditor({ value, onChange }: HoursEditorProps) {
               {!isClosed ? (
                 <div className="flex items-center gap-2">
                   <Input 
+                    id={`open-${day.key}`}
+                    name={`open-${day.key}`}
                     type="text" 
                     value={open} 
                     onChange={(e) => updateDay(day.key, `${e.target.value} - ${close}`)}
@@ -75,6 +77,8 @@ export function HoursEditor({ value, onChange }: HoursEditorProps) {
                   />
                   <span className="text-brand-muted">to</span>
                   <Input 
+                    id={`close-${day.key}`}
+                    name={`close-${day.key}`}
                     type="text" 
                     value={close} 
                     onChange={(e) => updateDay(day.key, `${open} - ${e.target.value}`)}
@@ -92,6 +96,7 @@ export function HoursEditor({ value, onChange }: HoursEditorProps) {
                 <Label htmlFor={`closed-${day.key}`} className="text-xs font-medium cursor-pointer">Closed</Label>
                 <Switch 
                   id={`closed-${day.key}`}
+                  name={`closed-${day.key}`}
                   checked={isClosed}
                   onCheckedChange={(checked) => {
                     updateDay(day.key, checked ? "Closed" : "9:00 AM - 5:00 PM");

@@ -160,13 +160,13 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
         <div className="space-y-6">
            <div className="bg-white p-8 rounded-2xl shadow-sm border border-brand-border space-y-6">
               <div className="space-y-2">
-                <Label className="text-lg">Post Title</Label>
-                <Input {...form.register("title")} onBlur={handleGenerateSlug} placeholder="The Benefits of Regular Checkups" className="h-14 text-xl font-heading rounded-xl font-semibold placeholder:font-normal" />
+                <Label htmlFor="blog-title" className="text-lg">Post Title</Label>
+                <Input id="blog-title" {...form.register("title")} onBlur={handleGenerateSlug} placeholder="The Benefits of Regular Checkups" className="h-14 text-xl font-heading rounded-xl font-semibold placeholder:font-normal" />
                 {form.formState.errors.title && <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>}
               </div>
               
               <div className="space-y-2">
-                <Label>Post Content</Label>
+                <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Post Content</p>
                 <div className="min-h-[400px]">
                   <RichTextEditor 
                     content={form.watch("content")} 
@@ -177,8 +177,8 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Post Excerpt</Label>
-                <Textarea {...form.register("excerpt")} placeholder="A quick summary for the blog listing page..." className="h-24 resize-y rounded-xl" />
+                <Label htmlFor="blog-excerpt">Post Excerpt</Label>
+                <Textarea id="blog-excerpt" {...form.register("excerpt")} placeholder="A quick summary for the blog listing page..." className="h-24 resize-y rounded-xl" />
                 {form.formState.errors.excerpt && <p className="text-xs text-red-500">{form.formState.errors.excerpt.message}</p>}
               </div>
            </div>
@@ -187,18 +187,18 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
               <h2 className="text-xl font-heading font-semibold text-brand-text mb-4 border-b border-brand-border pb-2">SEO Variables</h2>
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label>URL Slug</Label>
-                  <Input {...form.register("slug")} className="rounded-xl font-mono text-sm" />
+                  <Label htmlFor="blog-slug">URL Slug</Label>
+                  <Input id="blog-slug" {...form.register("slug")} className="rounded-xl font-mono text-sm" />
                   {form.formState.errors.slug && <p className="text-xs text-red-500">{form.formState.errors.slug.message}</p>}
                 </div>
                 <div className="space-y-2">
-                  <Label>Meta Title</Label>
-                  <Input {...form.register("metaTitle")} className="rounded-xl" placeholder="Leave empty to use Post Title" />
+                  <Label htmlFor="blog-meta-title">Meta Title</Label>
+                  <Input id="blog-meta-title" {...form.register("metaTitle")} className="rounded-xl" placeholder="Leave empty to use Post Title" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Meta Description</Label>
-                <Textarea {...form.register("metaDescription")} className="rounded-xl" placeholder="Leave empty to use Excerpt" />
+                <Label htmlFor="blog-meta-desc">Meta Description</Label>
+                <Textarea id="blog-meta-desc" {...form.register("metaDescription")} className="rounded-xl" placeholder="Leave empty to use Excerpt" />
               </div>
            </div>
         </div>
@@ -208,10 +208,11 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-border space-y-6">
              <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-base font-semibold">Publish Status</Label>
+                  <Label htmlFor="blog-publish" className="text-base font-semibold">Publish Status</Label>
                   <p className="text-xs text-brand-muted">{form.watch("isPublished") ? "Public" : "Draft"}</p>
                 </div>
                 <Switch
+                  id="blog-publish"
                   checked={form.watch("isPublished")}
                   onCheckedChange={(val) => form.setValue("isPublished", val)}
                   className="data-[state=checked]:bg-green-500"
@@ -220,8 +221,8 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
              
              {form.watch("isPublished") && (
                <div className="space-y-2 animate-fade-in pt-4 border-t border-brand-border">
-                 <Label>Publication Date</Label>
-                 <Input type="datetime-local" {...form.register("publishedAt")} className="rounded-xl" />
+                 <Label htmlFor="blog-date">Publication Date</Label>
+                 <Input id="blog-date" type="datetime-local" {...form.register("publishedAt")} className="rounded-xl" />
                </div>
              )}
           </div>
@@ -230,8 +231,8 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
             <h3 className="font-heading font-semibold text-sm uppercase tracking-wider text-brand-muted mb-4">Categorization</h3>
             
             <div className="space-y-2">
-              <Label>Category</Label>
-              <select {...form.register("category")} className="flex h-12 w-full items-center justify-between rounded-xl border border-brand-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary">
+              <Label htmlFor="blog-category">Category</Label>
+              <select id="blog-category" {...form.register("category")} className="flex h-12 w-full items-center justify-between rounded-xl border border-brand-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary">
                 <option value="Health Tips">Health Tips</option>
                 <option value="Medical News">Medical News</option>
                 <option value="Clinic Updates">Clinic Updates</option>
@@ -240,13 +241,13 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>Tags (Comma separated)</Label>
-              <Input {...form.register("tags")} placeholder="cardiology, checkup, heart" className="rounded-xl" />
+              <Label htmlFor="blog-tags">Tags (Comma separated)</Label>
+              <Input id="blog-tags" {...form.register("tags")} placeholder="cardiology, checkup, heart" className="rounded-xl" />
             </div>
 
             <div className="space-y-2">
-               <Label>Manual Read Time (Min)</Label>
-               <Input type="number" {...form.register("readingTimeMinutes")} placeholder="Auto" className="rounded-xl w-24" />
+               <Label htmlFor="blog-read-time">Manual Read Time (Min)</Label>
+               <Input id="blog-read-time" type="number" {...form.register("readingTimeMinutes")} placeholder="Auto" className="rounded-xl w-24" />
             </div>
           </div>
 

@@ -107,8 +107,9 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    </div>
 
                    <div className="space-y-2">
-                     <Label>Hero Image (Homepage)</Label>
+                     <Label htmlFor="settings-hero-upload">Hero Image (Homepage)</Label>
                      <GalleryUploader 
+                       id="settings-hero-upload"
                        folder="settings" 
                        defaultImage={initialData?.heroImageUrl}
                        onUploadSuccess={(url) => form.setValue("heroImageUrl", url)} 
@@ -214,8 +215,9 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    <Field id="doctorExperience" label="Years of Experience" placeholder="15" type="number" />
                    
                    <div className="space-y-2">
-                     <Label>Doctor Profile Photo</Label>
+                     <Label htmlFor="settings-doctor-photo">Doctor Profile Photo</Label>
                      <GalleryUploader 
+                       id="settings-doctor-photo"
                        folder="settings" 
                        defaultImage={initialData?.doctorPhotoUrl}
                        onUploadSuccess={(url) => form.setValue("doctorPhotoUrl", url)} 
@@ -235,8 +237,9 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    <Field id="visionText" label="Vision Statement" placeholder="To be the leading healthcare provider..." textarea />
 
                    <div className="space-y-2">
-                     <Label>Clinic Interior Photo (/about page)</Label>
+                     <Label htmlFor="settings-about-image">Clinic Interior Photo (/about page)</Label>
                      <GalleryUploader 
+                       id="settings-about-image"
                        folder="settings" 
                        defaultImage={initialData?.aboutImageUrl}
                        onUploadSuccess={(url) => form.setValue("aboutImageUrl", url)} 

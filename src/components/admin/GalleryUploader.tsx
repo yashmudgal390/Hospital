@@ -11,13 +11,15 @@ interface GalleryUploaderProps {
   folder?: string;
   className?: string;
   defaultImage?: string | null;
+  id?: string;
 }
 
 export function GalleryUploader({ 
   onUploadSuccess, 
   folder = "clinic",
   className = "",
-  defaultImage 
+  defaultImage,
+  id
 }: GalleryUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(defaultImage || null);
@@ -130,7 +132,7 @@ export function GalleryUploader({
               ${isDragActive ? 'border-brand-primary bg-brand-50 scale-[1.02]' : 'border-brand-border/80'}
             `}
           >
-            <input {...getInputProps()} />
+            <input {...getInputProps()} id={id || "gallery-upload-input"} aria-label="Upload image" />
             <div className="mx-auto w-12 h-12 mb-3 rounded-full bg-brand-100 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
               <UploadCloud className="h-6 w-6" />
             </div>
@@ -154,7 +156,10 @@ export function GalleryUploader({
           <div className="flex gap-2">
             <div className="relative flex-1">
               <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-muted" />
+              <label htmlFor="external-url-input" className="sr-only">External Image URL</label>
               <input 
+                id="external-url-input"
+                name="external-url"
                 type="text"
                 placeholder="https://example.com/photo.jpg"
                 className="w-full h-10 pl-9 pr-4 rounded-xl border border-brand-border text-xs focus:ring-1 focus:ring-brand-primary outline-none"

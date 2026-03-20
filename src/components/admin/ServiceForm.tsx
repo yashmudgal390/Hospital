@@ -114,13 +114,13 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label>Service Name <span className="text-red-500">*</span></Label>
-              <Input {...form.register("name")} onBlur={handleGenerateSlug} placeholder="e.g. Comprehensive Dental Exam" className="h-12 rounded-xl" />
+              <Label htmlFor="service-name">Service Name <span className="text-red-500">*</span></Label>
+              <Input id="service-name" {...form.register("name")} onBlur={handleGenerateSlug} placeholder="e.g. Comprehensive Dental Exam" className="h-12 rounded-xl" />
               {form.formState.errors.name && <p className="text-xs text-red-500">{form.formState.errors.name.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label>URL Slug <span className="text-red-500">*</span></Label>
-              <Input {...form.register("slug")} placeholder="e.g. dental-exam" className="h-12 rounded-xl font-mono text-sm" />
+              <Label htmlFor="service-slug">URL Slug <span className="text-red-500">*</span></Label>
+              <Input id="service-slug" {...form.register("slug")} placeholder="e.g. dental-exam" className="h-12 rounded-xl font-mono text-sm" />
               {form.formState.errors.slug && <p className="text-xs text-red-500">{form.formState.errors.slug.message}</p>}
             </div>
           </div>
@@ -138,14 +138,14 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Short Description <span className="text-red-500">*</span></Label>
-            <Textarea {...form.register("shortDescription")} placeholder="A brief 1-2 sentence overview for the cards..." className="min-h-[100px] resize-y rounded-xl" />
+            <Label htmlFor="service-short-desc">Short Description <span className="text-red-500">*</span></Label>
+            <Textarea id="service-short-desc" {...form.register("shortDescription")} placeholder="A brief 1-2 sentence overview for the cards..." className="min-h-[100px] resize-y rounded-xl" />
             {form.formState.errors.shortDescription && <p className="text-xs text-red-500">{form.formState.errors.shortDescription.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label>Full HTML Description (Detailed Page Content)</Label>
-            <Textarea {...form.register("fullDescription")} placeholder="<h2>What to Expect...</h2><p>...</p>" className="min-h-[200px] font-mono text-sm resize-y rounded-xl bg-brand-50" />
+            <Label htmlFor="service-full-desc">Full HTML Description (Detailed Page Content)</Label>
+            <Textarea id="service-full-desc" {...form.register("fullDescription")} placeholder="<h2>What to Expect...</h2><p>...</p>" className="min-h-[200px] font-mono text-sm resize-y rounded-xl bg-brand-50" />
             <p className="text-xs text-brand-muted">You can write standard HTML for rich text content here.</p>
           </div>
         </div>
@@ -158,10 +158,11 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
             <div className="space-y-6">
                <div className="flex items-center justify-between bg-brand-50 p-4 rounded-xl border border-brand-border">
                   <div>
-                    <Label className="text-base font-semibold">Active Status</Label>
+                    <Label htmlFor="service-active" className="text-base font-semibold">Active Status</Label>
                     <p className="text-xs text-brand-muted">Should this service be visible publicly?</p>
                   </div>
                   <Switch
+                    id="service-active"
                     checked={form.watch("isActive")}
                     onCheckedChange={(val) => form.setValue("isActive", val)}
                   />
@@ -169,30 +170,31 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
                
                <div className="flex items-center justify-between bg-brand-50 p-4 rounded-xl border border-brand-border">
                   <div>
-                    <Label className="text-base font-semibold">Featured</Label>
+                    <Label htmlFor="service-featured" className="text-base font-semibold">Featured</Label>
                     <p className="text-xs text-brand-muted">Pin this service to the homepage.</p>
                   </div>
                   <Switch
+                    id="service-featured"
                     checked={form.watch("isFeatured")}
                     onCheckedChange={(val) => form.setValue("isFeatured", val)}
                   />
                </div>
 
                <div className="space-y-2">
-                 <Label>Sort Order</Label>
-                 <Input type="number" {...form.register("sortOrder")} className="h-12 rounded-xl w-32" />
+                 <Label htmlFor="service-sort">Sort Order</Label>
+                 <Input id="service-sort" type="number" {...form.register("sortOrder")} className="h-12 rounded-xl w-32" />
                  <p className="text-xs text-brand-muted">Lower numbers appear first.</p>
                </div>
             </div>
 
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>SEO Meta Title</Label>
-                <Input {...form.register("metaTitle")} placeholder="Overwrites default page title" className="h-12 rounded-xl" />
+                <Label htmlFor="service-meta-title">SEO Meta Title</Label>
+                <Input id="service-meta-title" {...form.register("metaTitle")} placeholder="Overwrites default page title" className="h-12 rounded-xl" />
               </div>
               <div className="space-y-2">
-                <Label>SEO Meta Description</Label>
-                <Textarea {...form.register("metaDescription")} placeholder="Overwrites default meta description" className="min-h-[100px] resize-y rounded-xl" />
+                <Label htmlFor="service-meta-desc">SEO Meta Description</Label>
+                <Textarea id="service-meta-desc" {...form.register("metaDescription")} placeholder="Overwrites default meta description" className="min-h-[100px] resize-y rounded-xl" />
               </div>
             </div>
           </div>
