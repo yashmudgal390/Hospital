@@ -19,12 +19,16 @@ try {
   if (isDbConfigured) {
     client = globalForDb.client ?? postgres(dbUrl, {
       max: isBuilding ? 1 : 5, 
-      idle_timeout: 10,
-      connect_timeout: 5, 
+      idle_timeout: 20,
+      connect_timeout: 10, 
       prepare: false, 
       onnotice: () => {}, 
       debug: false,
       ssl: dbUrl.includes("supabase.co") ? "require" : false,
+      // For PGBouncer / Serverless environments
+      transform: {
+        undefined: null,
+      },
     });
     if (process.env.NODE_ENV !== "production") globalForDb.client = client;
   } else {
