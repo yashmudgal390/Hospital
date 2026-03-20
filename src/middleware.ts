@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     style-src 'self' 'unsafe-inline' https: http:;
     img-src 'self' blob: data: https: http:;
     font-src 'self' data: https: http:;
-    connect-src 'self' https: http:;
+    connect-src 'self' blob: data: https: http: ws: wss:;
     frame-src 'self' https: http:;
     object-src 'none';
     base-uri 'self';
