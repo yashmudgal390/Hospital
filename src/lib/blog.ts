@@ -1,11 +1,11 @@
 import { unstable_cache } from "next/cache"
-import { db, isDbConfigured } from "@/db"
+import { db, isDbConfigured, isBuilding } from "@/db"
 import { blog } from "@/db/schema/blog"
 import { eq, desc, and, ne } from "drizzle-orm"
 
 export const getBlogPosts = unstable_cache(
   async () => {
-    if (!isDbConfigured) return [];
+    if (!isDbConfigured || isBuilding) return [];
     try {
       return await db.select().from(blog)
         .where(eq(blog.isPublished, true))
@@ -21,7 +21,7 @@ export const getBlogPosts = unstable_cache(
 
 export const getBlogPostBySlug = unstable_cache(
   async (slug: string) => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return null;
     try {
       const result = await db.select().from(blog)
         .where(eq(blog.slug, slug))
@@ -38,7 +38,7 @@ export const getBlogPostBySlug = unstable_cache(
 
 export const getRelatedPosts = unstable_cache(
   async (excludedId: string) => {
-    if (!isDbConfigured) return [];
+    if (!isDbConfigured || isBuilding) return [];
     try {
       return await db
         .select({

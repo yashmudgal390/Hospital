@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache"
-import { db, isDbConfigured } from "@/db"
+import { db, isDbConfigured, isBuilding } from "@/db"
 import { settings } from "@/db/schema/settings"
 
 const FALLBACK_SETTINGS = {
@@ -34,7 +34,7 @@ const FALLBACK_LAYOUT = {
 // 1. Textual Content (Fast)
 export const getClinicSettings = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
       const result = await db.select({
         clinicName: settings.clinicName,
@@ -62,7 +62,7 @@ export const getClinicSettings = unstable_cache(
 // 2. Metadata (Tiny) - SAFE TO CACHE
 export const getSiteMetadata = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
       const [res] = await db
         .select({
@@ -85,7 +85,7 @@ export const getSiteMetadata = unstable_cache(
 // 3. Layout Essentials
 export const getLayoutSettings = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
       const [res] = await db.select({
         clinicName: settings.clinicName,
@@ -114,7 +114,7 @@ export const getLayoutSettings = unstable_cache(
 // 4. Home Page Content (Fast - Text only)
 export const getHomeSettings = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
       const [res] = await db.select({
         heroHeadline: settings.heroHeadline,
@@ -139,7 +139,7 @@ export const getHomeSettings = unstable_cache(
 // 5. Individual Image Fetchers (Fast when cached)
 export const getDoctorPhoto = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
        const [res] = await db.select({ url: settings.doctorPhotoUrl }).from(settings).limit(1);
        return res?.url ?? null;
@@ -151,7 +151,7 @@ export const getDoctorPhoto = unstable_cache(
 
 export const getHeroImage = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
        const [res] = await db.select({ url: settings.heroImageUrl }).from(settings).limit(1);
        return res?.url ?? null;
@@ -163,7 +163,7 @@ export const getHeroImage = unstable_cache(
 
 export const getAboutImage = unstable_cache(
   async () => {
-    if (!isDbConfigured) return null;
+    if (!isDbConfigured || isBuilding) return FALLBACK_SETTINGS as any;
     try {
        const [res] = await db.select({ url: settings.aboutImageUrl }).from(settings).limit(1);
        return res?.url ?? null;

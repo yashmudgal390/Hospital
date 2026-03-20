@@ -7,7 +7,7 @@ const isPlaceholder = dbUrl.includes("user:password") || dbUrl.includes("host/db
 export const isDbConfigured = !!dbUrl && !isPlaceholder;
 
 // Build-time Warm-up: Give Vercel a second to resolve potential DNS issues
-const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
+export const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
 
 const globalForDb = globalThis as unknown as {
   client: postgres.Sql | undefined;
