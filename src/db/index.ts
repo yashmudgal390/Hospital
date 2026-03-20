@@ -26,7 +26,7 @@ try {
         prepare: false, 
         onnotice: () => {}, 
         debug: false,
-        ssl: dbUrl.includes("supabase.co") ? "require" : false,
+        ssl: dbUrl.includes("supabase") ? "require" : false,
         transform: {
           undefined: null,
         },
