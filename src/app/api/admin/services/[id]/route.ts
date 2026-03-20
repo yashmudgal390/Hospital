@@ -3,7 +3,7 @@ import { getAdminSession } from "@/lib/session";
 import { db, isDbConfigured } from "@/db";
 import { services } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -24,6 +24,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .returning();
     
     revalidateTag("services");
+    revalidatePath("/services");
+    revalidatePath("/");
 
     return NextResponse.json(updated);
   } catch (error: any) {
@@ -46,6 +48,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     await db.delete(services).where(eq(services.id, params.id));
     revalidateTag("services");
+    revalidatePath("/services");
+    revalidatePath("/");
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

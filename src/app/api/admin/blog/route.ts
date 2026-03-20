@@ -3,7 +3,7 @@ import { getAdminSession } from "@/lib/session";
 import { db, isDbConfigured } from "@/db";
 import { blog } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createId } from "@paralleldrive/cuid2";
 
 export async function POST(req: Request) {
@@ -35,6 +35,8 @@ export async function POST(req: Request) {
       .returning();
     
     revalidateTag("blog");
+    revalidatePath("/blog");
+    revalidatePath("/");
 
     return NextResponse.json(newPost);
   } catch (error: any) {

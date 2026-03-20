@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { gallery } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { deleteImageByUrl } from "@/lib/cloudinary";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -21,6 +21,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .returning();
     
     revalidateTag("gallery");
+    revalidatePath("/gallery");
+    revalidatePath("/");
 
     return NextResponse.json(updated);
   } catch (error) {
@@ -45,6 +47,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     await db.delete(gallery).where(eq(gallery.id, params.id));
     revalidateTag("gallery");
+    revalidatePath("/gallery");
+    revalidatePath("/");
 
     return NextResponse.json({ success: true });
   } catch (error) {

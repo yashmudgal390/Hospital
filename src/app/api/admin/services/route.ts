@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
 import { db, isDbConfigured } from "@/db";
 import { services } from "@/db/schema";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createId } from "@paralleldrive/cuid2";
 
 export async function POST(req: Request) {
@@ -27,6 +27,8 @@ export async function POST(req: Request) {
       .returning();
     
     revalidateTag("services");
+    revalidatePath("/services");
+    revalidatePath("/");
 
     return NextResponse.json(newService);
   } catch (error: any) {

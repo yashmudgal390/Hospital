@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
 import { db, isDbConfigured } from "@/db";
 import { gallery } from "@/db/schema";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createId } from "@paralleldrive/cuid2";
 
 export async function POST(req: Request) {
@@ -47,6 +47,8 @@ export async function POST(req: Request) {
     // Step 5: Refresh the public page
     try {
       revalidateTag("gallery");
+      revalidatePath("/gallery");
+      revalidatePath("/");
     } catch (revalidateError) {
       console.warn("[Gallery API] Revalidation failed (non-fatal):", revalidateError);
     }
