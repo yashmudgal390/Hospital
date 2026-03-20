@@ -2,6 +2,35 @@ import { unstable_cache } from "next/cache"
 import { db, isDbConfigured } from "@/db"
 import { settings } from "@/db/schema/settings"
 
+const FALLBACK_SETTINGS = {
+  clinicName: "Dr. Clinic",
+  tagline: "Compassionate Care for Your Family",
+  aboutText: "Welcome to our clinic.",
+  missionText: "To provide the best care.",
+  visionText: "A healthy community.",
+  doctorName: "Dr. Medical",
+  doctorTitle: "Specialist",
+  doctorSpecialty: "General Medicine",
+  doctorBio: "Expert medical care.",
+  doctorExperience: "10+ Years",
+  doctorQualifications: "MD",
+} as const;
+
+const FALLBACK_LAYOUT = {
+  clinicName: "Dr. Clinic",
+  tagline: "Compassionate Care for Your Family",
+  logoUrl: null,
+  faviconUrl: null,
+  phone: "+91",
+  email: "contact@clinic.com",
+  address: "123 Health Ave",
+  operatingHours: {},
+  emergencyPhone: null,
+  showEmergencyBanner: false,
+  appointmentsEnabled: true,
+  mapEmbedUrl: null,
+} as const;
+
 // 1. Textual Content (Fast)
 export const getClinicSettings = unstable_cache(
   async () => {
@@ -23,7 +52,7 @@ export const getClinicSettings = unstable_cache(
       return result[0] ?? null
     } catch (e) {
       console.warn("[getClinicSettings] error:", e);
-      return null;
+      return FALLBACK_SETTINGS as any;
     }
   },
   ["clinic-settings"],
@@ -75,7 +104,7 @@ export const getLayoutSettings = unstable_cache(
       return res ?? null;
     } catch (e) {
       console.warn("[getLayoutSettings] error:", e);
-      return null;
+      return FALLBACK_LAYOUT as any;
     }
   },
   ["layout-settings"],
