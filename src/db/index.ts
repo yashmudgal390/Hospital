@@ -22,8 +22,8 @@ const client =
   globalForDb.client ??
   postgres(process.env.DATABASE_URL!, {
     max: isBuilding ? 1 : 5, // restrict to 1 during build
-    idle_timeout: 60,
-    connect_timeout: 60, // give it plenty of time for DNS resolution
+    idle_timeout: 10,
+    connect_timeout: 2, // 2-second hard cutoff for UX
     prepare: false, // required for Supavisor and PgBouncer
     onnotice: () => {}, // silences the logs
     debug: false,
