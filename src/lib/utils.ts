@@ -149,20 +149,26 @@ export function getValidMapEmbedUrl(url: string | null | undefined): string | nu
   }
 
   // 3. Common Search Link -> Search Embed (Legacy format that often still works without API key)
+  // 3. Common Search Link -> Search Embed
   if (cleaned.includes("google.com/maps") || cleaned.includes("maps.app.goo.gl")) {
-     // If it's a short link or a regular view link, we can't easily transform it 
-     // to a functional /embed?pb=... without the Embed API.
-     // But we can try the old format as a fallback.
      if (cleaned.includes("maps.app.goo.gl")) {
-        // We can't transform short links safely. Return as is (will fail) or null?
-        // Let's keep it as is, but we should inform the user in the admin panel.
+        // Short links cannot be embedded directly. 
+        // We return the short link, but it's better than nothing.
         return cleaned; 
      }
      
      // Try to transform https://www.google.com/maps/place/Address to a search embed
      const placeMatch = cleaned.match(/\/maps\/place\/([^/]+)/);
      if (placeMatch && placeMatch[1]) {
-        return `https://maps.google.com/maps?q=${placeMatch[1]}&output=embed`;
+        // Correctly handle the @coordinate suffix if present
+        const placeName = placeMatch[1].split('/')[0];
+        return `https://maps.google.com/maps?q=${placeName}&output=embed`;
+     }
+
+     // Try to transform share links with search query
+     const qMatch = cleaned.match(/q=([^&]+)/);
+     if (qMatch && qMatch[1]) {
+        return `https://maps.google.com/maps?q=${qMatch[1]}&output=embed`;
      }
   }
 

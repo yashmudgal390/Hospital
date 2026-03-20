@@ -12,12 +12,20 @@ cloudinary.config({
  * e.g., https://res.cloudinary.com/cloud/image/upload/v12345/folder/image.jpg -> folder/image
  */
 export function extractPublicId(url: string | null | undefined): string | null {
-  if (!url) return null;
-  // Handle standard Cloudinary format
-  const matches = url.match(/\/v\d+\/(.+?)\.[a-zA-Z0-9]+$/);
-  if (matches && matches[1]) {
-    return matches[1];
+  if (!url || !url.includes("cloudinary.com")) return null;
+
+  // 1. Handle standard format with version: /v12345/folder/image.jpg
+  const versionMatch = url.match(/\/v\d+\/(.+?)\.[a-zA-Z0-9]+$/);
+  if (versionMatch && versionMatch[1]) {
+    return versionMatch[1];
   }
+
+  // 2. Handle format without version: /upload/folder/image.jpg
+  const uploadMatch = url.match(/\/upload\/(.+?)\.[a-zA-Z0-9]+$/);
+  if (uploadMatch && uploadMatch[1]) {
+    return uploadMatch[1];
+  }
+
   return null;
 }
 
