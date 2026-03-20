@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       revalidatePath("/gallery");
       revalidatePath("/");
     } catch (revalidateError) {
-      console.warn("[Gallery API] Revalidation failed (non-fatal):", revalidateError);
+      console.warn("[Gallery POST] Revalidation failed:", revalidateError);
     }
 
     return NextResponse.json(newPhoto);

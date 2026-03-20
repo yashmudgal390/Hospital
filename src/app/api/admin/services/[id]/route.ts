@@ -22,10 +22,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .set(body)
       .where(eq(services.id, params.id))
       .returning();
-    
-    revalidateTag("services");
-    revalidatePath("/services");
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("services");
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Services PUT] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json(updated);
   } catch (error: any) {
@@ -47,9 +51,15 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     await db.delete(services).where(eq(services.id, params.id));
-    revalidateTag("services");
-    revalidatePath("/services");
-    revalidatePath("/");
+    
+    // Defensive revalidation
+    try {
+      revalidateTag("services");
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Services DELETE] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

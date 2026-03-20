@@ -82,8 +82,13 @@ export async function PUT(req: Request) {
       .returning();
 
     // Trigger revalidations for all public pages
-    revalidateTag("settings");
-    revalidatePath("/", "layout");
+    // Defensive revalidation
+    try {
+      revalidateTag("settings");
+      revalidatePath("/", "layout");
+    } catch (revalError) {
+      console.warn("[Settings PUT] Revalidation failed:", revalError);
+    }
     
     return NextResponse.json(updated);
   } catch (error: any) {

@@ -19,10 +19,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .set(body)
       .where(eq(gallery.id, params.id))
       .returning();
-    
-    revalidateTag("gallery");
-    revalidatePath("/gallery");
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("gallery");
+      revalidatePath("/gallery");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Gallery PUT] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json(updated);
   } catch (error) {
@@ -46,9 +50,15 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     await db.delete(gallery).where(eq(gallery.id, params.id));
-    revalidateTag("gallery");
-    revalidatePath("/gallery");
-    revalidatePath("/");
+    
+    // Defensive revalidation
+    try {
+      revalidateTag("gallery");
+      revalidatePath("/gallery");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Gallery DELETE] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -26,9 +26,14 @@ export async function POST(req: Request) {
       })
       .returning();
     
-    revalidateTag("services");
-    revalidatePath("/services");
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("services");
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Services POST] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json(newService);
   } catch (error: any) {

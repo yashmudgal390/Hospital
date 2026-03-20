@@ -34,9 +34,14 @@ export async function POST(req: Request) {
       .values(insertData)
       .returning();
     
-    revalidateTag("blog");
-    revalidatePath("/blog");
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("blog");
+      revalidatePath("/blog");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Blog POST] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json(newPost);
   } catch (error: any) {

@@ -37,10 +37,15 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .where(eq(blog.id, params.id))
       .returning();
     
-    revalidateTag("blog");
-    revalidatePath("/blog");
-    if (updated && updated.slug) revalidatePath(`/blog/${updated.slug}`);
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("blog");
+      revalidatePath("/blog");
+      if (updated && updated.slug) revalidatePath(`/blog/${updated.slug}`);
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Blog PUT] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json(updated);
   } catch (error: any) {
@@ -62,9 +67,14 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     await db.delete(blog).where(eq(blog.id, params.id));
-    revalidateTag("blog");
-    revalidatePath("/blog");
-    revalidatePath("/");
+    // Defensive revalidation
+    try {
+      revalidateTag("blog");
+      revalidatePath("/blog");
+      revalidatePath("/");
+    } catch (revalError) {
+      console.warn("[Blog DELETE] Revalidation failed:", revalError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
