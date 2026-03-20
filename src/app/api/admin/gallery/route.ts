@@ -3,6 +3,7 @@ import { getAdminSession } from "@/lib/session";
 import { db, isDbConfigured } from "@/db";
 import { gallery } from "@/db/schema";
 import { revalidateTag } from "next/cache";
+import { createId } from "@paralleldrive/cuid2";
 
 export async function POST(req: Request) {
   try {
@@ -27,24 +28,41 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Image URL is required." }, { status: 400 });
     }
 
+    // Step 4: Perform the Insert with explicit fields to be safe
     const [newPhoto] = await db
       .insert(gallery)
       .values({
+        id: createId(), // Explicitly generate ID to bypass driver issues
         imageUrl,
         cloudinaryPublicId,
         altText: altText || "",
-        caption,
+        caption: caption || null,
         category: category || "General",
         sortOrder: sortOrder || 0,
         isActive: isActive !== undefined ? isActive : true,
+        createdAt: new Date(), // Explicitly set timestamp
       })
       .returning();
     
-    revalidateTag("gallery");
+    // Step 5: Refresh the public page
+    try {
+      revalidateTag("gallery");
+    } catch (revalidateError) {
+      console.warn("[Gallery API] Revalidation failed (non-fatal):", revalidateError);
+    }
 
     return NextResponse.json(newPhoto);
   } catch (error: any) {
-    console.error("[Gallery API Error]", error);
-    return NextResponse.json({ error: "Error adding gallery photo" }, { status: 500 });
+    console.error("[Gallery API Error Details]:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+      detail: error.detail
+    });
+    
+    return NextResponse.json({ 
+      error: "Error adding gallery photo",
+      details: error.message || "Unknown database error"
+    }, { status: 500 });
   }
 }
