@@ -14,15 +14,14 @@ export async function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", path);
 
-  // Define a centralized CSP
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://res.cloudinary.com https://maps.googleapis.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://res.cloudinary.com https://maps.gstatic.com https://*.googleapis.com https://*.unsplash.com;
-    font-src 'self' data: https://fonts.gstatic.com;
-    connect-src 'self' https://res.cloudinary.com https://api.cloudinary.com;
-    frame-src 'self' https://www.google.com https://*.google.com;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:;
+    style-src 'self' 'unsafe-inline' https: http:;
+    img-src 'self' blob: data: https: http:;
+    font-src 'self' data: https: http:;
+    connect-src 'self' https: http:;
+    frame-src 'self' https: http:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';

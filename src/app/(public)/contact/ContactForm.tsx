@@ -139,12 +139,12 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="msg-name">Full Name <span className="text-red-500">*</span></Label>
-                <Input id="msg-name" placeholder="John Doe" disabled={isSubmitting} {...msgForm.register("name")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                <Input id="msg-name" placeholder="John Doe" autoComplete="name" disabled={isSubmitting} {...msgForm.register("name")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
                 {msgForm.formState.errors.name && <p className="text-xs text-red-500">{msgForm.formState.errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="msg-email">Email Address <span className="text-red-500">*</span></Label>
-                <Input id="msg-email" type="email" placeholder="john@example.com" disabled={isSubmitting} {...msgForm.register("email")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                <Input id="msg-email" type="email" placeholder="john@example.com" autoComplete="email" disabled={isSubmitting} {...msgForm.register("email")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
                 {msgForm.formState.errors.email && <p className="text-xs text-red-500">{msgForm.formState.errors.email.message}</p>}
               </div>
             </div>
@@ -152,7 +152,7 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="msg-phone">Phone Number (Optional)</Label>
-                <Input id="msg-phone" type="tel" placeholder="+91" disabled={isSubmitting} {...msgForm.register("phone")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                <Input id="msg-phone" type="tel" placeholder="+91" autoComplete="tel" disabled={isSubmitting} {...msgForm.register("phone")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="msg-subject">Subject <span className="text-red-500">*</span></Label>
@@ -195,12 +195,12 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="apt-name">Patient Name <span className="text-red-500">*</span></Label>
-                  <Input id="apt-name" placeholder="John Doe" disabled={isSubmitting} {...aptForm.register("name")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                  <Input id="apt-name" placeholder="John Doe" autoComplete="name" disabled={isSubmitting} {...aptForm.register("name")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
                   {aptForm.formState.errors.name && <p className="text-xs text-red-500">{aptForm.formState.errors.name.message}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="apt-phone">Phone Number <span className="text-red-500">*</span></Label>
-                  <Input id="apt-phone" type="tel" placeholder="+91" disabled={isSubmitting} {...aptForm.register("phone")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                  <Input id="apt-phone" type="tel" placeholder="+91" autoComplete="tel" disabled={isSubmitting} {...aptForm.register("phone")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
                   {aptForm.formState.errors.phone && <p className="text-xs text-red-500">{aptForm.formState.errors.phone.message}</p>}
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="apt-email">Email Address (Optional)</Label>
-                  <Input id="apt-email" type="email" placeholder="john@example.com" disabled={isSubmitting} {...aptForm.register("email")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
+                  <Input id="apt-email" type="email" placeholder="john@example.com" autoComplete="email" disabled={isSubmitting} {...aptForm.register("email")} className="rounded-xl border-brand-border focus-visible:ring-brand-primary" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="apt-service">Related Service (Optional)</Label>

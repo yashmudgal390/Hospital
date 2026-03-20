@@ -20,10 +20,11 @@ try {
     client = globalForDb.client ?? postgres(dbUrl, {
       max: isBuilding ? 1 : 5, 
       idle_timeout: 10,
-      connect_timeout: 2, 
+      connect_timeout: 5, 
       prepare: false, 
       onnotice: () => {}, 
       debug: false,
+      ssl: dbUrl.includes("supabase.co") ? "require" : false,
     });
     if (process.env.NODE_ENV !== "production") globalForDb.client = client;
   } else {

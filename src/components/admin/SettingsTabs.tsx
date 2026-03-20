@@ -54,16 +54,25 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
   }
 
   // Common UI Wrapper for Inputs
-  const Field = ({ id, label, placeholder, type = "text", textarea = false }: any) => (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      {textarea ? (
-        <Textarea id={id} placeholder={placeholder} className="min-h-[100px] resize-y rounded-xl" {...form.register(id)} />
-      ) : (
-        <Input id={id} type={type} placeholder={placeholder} className="h-12 rounded-xl" {...form.register(id)} />
-      )}
-    </div>
-  );
+   function Field({ id, label, placeholder, type = "text", textarea = false, autoComplete }: { 
+     id: any; 
+     label: string; 
+     placeholder: string; 
+     type?: string; 
+     textarea?: boolean;
+     autoComplete?: string;
+   }) {
+     return (
+       <div className="space-y-2">
+         <Label htmlFor={id}>{label}</Label>
+         {textarea ? (
+           <Textarea id={id} placeholder={placeholder} {...form.register(id)} className="rounded-xl min-h-[100px]" />
+         ) : (
+           <Input id={id} type={type} placeholder={placeholder} autoComplete={autoComplete} {...form.register(id)} className="rounded-xl h-11" />
+         )}
+       </div>
+     );
+   }
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="animate-fade-in-up pb-20 max-w-5xl">
@@ -90,8 +99,8 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
           <TabsContent value="general" className="space-y-8 mt-0 outline-none">
              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                   <Field id="clinicName" label="Clinic Name" placeholder="Enter Clinic/Hospital Name" />
-                   <Field id="tagline" label="Tagline" placeholder="Briefly describe your mission" />
+                   <Field id="clinicName" label="Clinic Name" placeholder="LifeCare Wellness Clinic" autoComplete="organization" />
+                   <Field id="tagline" label="Clinic Tagline" placeholder="Compassionate Care for Your Family" />
                    
                    <div className="flex flex-col gap-4 p-4 border border-brand-border bg-brand-50 rounded-xl">
                       <div className="flex items-center justify-between">
@@ -137,10 +146,10 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                  <h3 className="font-heading font-semibold text-lg text-brand-text mb-2 border-b border-brand-border pb-2">Primary Contact</h3>
-                 <Field id="phone" label="Phone Number" placeholder="+91" />
-                 <Field id="email" label="Email Address" placeholder="contact@clinic.com" type="email" />
-                 <Field id="whatsapp" label="WhatsApp Number (Optional)" placeholder="+91" />
-                 <Field id="address" label="Physical Address" placeholder="123 Health Ave..." textarea />
+                 <Field id="contactEmail" label="Public Contact Email" placeholder="info@clinic.com" type="email" autoComplete="email" />
+                 <Field id="contactPhone" label="Public Contact Phone" placeholder="+91" type="tel" autoComplete="tel" />
+                 <Field id="whatsapp" label="WhatsApp Number (Optional)" placeholder="+91" type="tel" />
+                 <Field id="address" label="Physical Address" placeholder="123 Health Ave..." textarea autoComplete="street-address" />
               </div>
 
               <div className="space-y-6">
