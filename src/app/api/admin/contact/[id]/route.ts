@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
-import { db } from "@/db";
+import { db, isDbConfigured } from "@/db";
 import { contactMessages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -13,6 +13,12 @@ export async function DELETE(
     if (!session || !session.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    if (!isDbConfigured) {
+      return NextResponse.json({ error: "Database not configured. Cannot delete message." }, { status: 400 });
+    }
+
+    const { id } = params;
 
     const [deleted] = await db
       .delete(contactMessages)

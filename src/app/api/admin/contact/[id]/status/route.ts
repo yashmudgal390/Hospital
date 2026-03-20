@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
-import { db } from "@/db";
+import { db, isDbConfigured } from "@/db";
 import { contactMessages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -13,6 +13,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     const body = await req.json();
     
+    if (!isDbConfigured) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 400 });
+    }
+
     // allow toggling both status and isStarred
     const updateData: any = { updatedAt: new Date() };
     if (body.status !== undefined) updateData.status = body.status;

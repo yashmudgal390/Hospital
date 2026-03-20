@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
-import { db } from "@/db";
+import { db, isDbConfigured } from "@/db";
 import { blog } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
@@ -9,6 +9,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   try {
     const session = await getAdminSession();
     if (!session || !session.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    if (!isDbConfigured) {
+      return NextResponse.json({ error: "Database not configured. Cannot update blog." }, { status: 400 });
+    }
 
     const body = await req.json();
     
@@ -37,8 +41,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     return NextResponse.json(updated);
   } catch (error: any) {
-    console.error("[Blog PUT Error]:", error.message || error);
-    return NextResponse.json({ error: error.message || "Error updating blog post" }, { status: 500 });
+    console.error("[Blog PUT Error Details]:", error);
+    return NextResponse.json({ 
+      error: "Error updating blog post",
+      details: error.message || "Unknown database error"
+    }, { status: 500 });
   }
 }
 
@@ -47,11 +54,19 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     const session = await getAdminSession();
     if (!session || !session.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    if (!isDbConfigured) {
+      return NextResponse.json({ error: "Database not configured. Cannot delete blog." }, { status: 400 });
+    }
+
     await db.delete(blog).where(eq(blog.id, params.id));
     revalidateTag("blog");
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: "Error deleting blog post" }, { status: 500 });
+  } catch (error: any) {
+    console.error("[Blog DELETE Error Details]:", error);
+    return NextResponse.json({ 
+      error: "Error deleting blog post",
+      details: error.message || "Unknown database error" 
+    }, { status: 500 });
   }
 }
