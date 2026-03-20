@@ -8,6 +8,7 @@ import { checkFormRateLimit } from "@/lib/ratelimit";
 import { sendEmail, adminNotifyEmail } from "@/lib/email";
 import { ContactMessageEmail } from "@/emails/ContactMessage";
 import { CallbackRequestEmail } from "@/emails/CallbackRequest";
+import { createId } from "@paralleldrive/cuid2";
 
 // Helper to get client IP cleanly
 function getIp() {
@@ -33,14 +34,17 @@ export async function submitContactMessage(data: {
       return { error: "Too many requests. Please try again later." };
     }
 
-    // Insert into DB
+    // Insert into DB with manual ID and timestamps for stability
     await db.insert(contactMessages).values({
+      id: createId(),
       senderName: data.name.trim(),
       senderEmail: data.email.trim(),
       senderPhone: data.phone?.trim(),
       subject: data.subject.trim(),
       message: data.message.trim(),
       ipAddress: ip,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     // Send email notification to admin
@@ -59,9 +63,13 @@ export async function submitContactMessage(data: {
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("[actions] submitContactMessage error:", error);
-    return { error: "An unexpected error occurred. Please try again." };
+  } catch (error: any) {
+    console.error("[actions] submitContactMessage error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
+    return { error: `Submission failed: ${error.message || "Unknown error"}` };
   }
 }
 
@@ -96,8 +104,9 @@ export async function submitAppointment(data: {
       if (svc) serviceName = svc.name;
     }
 
-    // Insert into DB
+    // Insert into DB with manual ID and timestamps for stability
     await db.insert(appointments).values({
+      id: createId(),
       patientName: data.name.trim(),
       patientPhone: data.phone.trim(),
       patientEmail: data.email?.trim() || null,
@@ -108,6 +117,8 @@ export async function submitAppointment(data: {
       reasonForVisit: data.reason.trim(),
       // Treat as a callback request since the clinic must call to confirm
       isCallbackRequest: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     // Send email notification to admin
@@ -125,8 +136,12 @@ export async function submitAppointment(data: {
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("[actions] submitAppointment error:", error);
-    return { error: "An unexpected error occurred. Please try again." };
+  } catch (error: any) {
+    console.error("[actions] submitAppointment error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
+    return { error: `Appointment booking failed: ${error.message || "Unknown error"}` };
   }
 }

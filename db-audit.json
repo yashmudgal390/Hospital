@@ -1,0 +1,67 @@
+{
+  "tables": [
+    {
+      "table_name": "appointments"
+    },
+    {
+      "table_name": "blog"
+    },
+    {
+      "table_name": "contact_messages"
+    },
+    {
+      "table_name": "gallery"
+    },
+    {
+      "table_name": "settings"
+    },
+    {
+      "table_name": "services"
+    }
+  ],
+  "enums": [
+    {
+      "typname": "oauth_client_type"
+    },
+    {
+      "typname": "equality_op"
+    },
+    {
+      "typname": "buckettype"
+    },
+    {
+      "typname": "appointment_status"
+    },
+    {
+      "typname": "oauth_response_type"
+    },
+    {
+      "typname": "factor_type"
+    },
+    {
+      "typname": "aal_level"
+    },
+    {
+      "typname": "action"
+    },
+    {
+      "typname": "message_status"
+    },
+    {
+      "typname": "oauth_registration_type"
+    },
+    {
+      "typname": "oauth_authorization_status"
+    },
+    {
+      "typname": "one_time_token_type"
+    },
+    {
+      "typname": "factor_status"
+    },
+    {
+      "typname": "code_challenge_method"
+    }
+  ],
+  "error": null
+}

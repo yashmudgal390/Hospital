@@ -16,11 +16,26 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
+    const { 
+      name, slug, shortDescription, fullDescription, 
+      imageUrl, sortOrder, isFeatured, isActive,
+      metaTitle, metaDescription 
+    } = body;
+    
     const [newService] = await db
       .insert(services)
       .values({
-        ...body,
         id: body.id || createId(),
+        name,
+        slug,
+        shortDescription,
+        fullDescription: fullDescription || null,
+        imageUrl: imageUrl || null,
+        sortOrder: sortOrder || 0,
+        isFeatured: isFeatured ?? false,
+        isActive: isActive ?? true,
+        metaTitle: metaTitle || null,
+        metaDescription: metaDescription || null,
         createdAt: new Date(),
         updatedAt: new Date()
       })

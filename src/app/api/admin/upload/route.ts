@@ -67,10 +67,13 @@ export async function POST(req: Request) {
       url: result.url,
       publicId: result.publicId,
     });
-  } catch (error) {
-    console.error("[Upload API Error]", error);
+  } catch (error: any) {
+    console.error("[Upload API Error Details]:", {
+      message: error.message,
+      stack: error.stack,
+    });
     return NextResponse.json(
-      { error: "Internal server error." },
+      { error: `Upload failed: ${error.message || "Internal server error"}` },
       { status: 500 }
     );
   }

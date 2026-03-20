@@ -15,11 +15,27 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     const body = await req.json();
-    body.updatedAt = new Date();
+    const { 
+      name, slug, shortDescription, fullDescription, 
+      imageUrl, sortOrder, isFeatured, isActive,
+      metaTitle, metaDescription 
+    } = body;
 
     const [updated] = await db
       .update(services)
-      .set(body)
+      .set({
+        name,
+        slug,
+        shortDescription,
+        fullDescription: fullDescription || null,
+        imageUrl: imageUrl || null,
+        sortOrder: sortOrder || 0,
+        isFeatured: isFeatured ?? false,
+        isActive: isActive ?? true,
+        metaTitle: metaTitle || null,
+        metaDescription: metaDescription || null,
+        updatedAt: new Date(),
+      })
       .where(eq(services.id, params.id))
       .returning();
     // Defensive revalidation

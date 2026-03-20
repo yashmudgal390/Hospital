@@ -42,7 +42,7 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
   const isEditing = !!initialData?.id;
 
   const form = useForm<ServiceValues>({
-    resolver: zodResolver(serviceSchema),
+    resolver: zodResolver(serviceSchema) as any,
     defaultValues: {
       name: initialData?.name || "",
       slug: initialData?.slug || "",
@@ -78,7 +78,10 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error("Failed to save service");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to save service");
+      }
       
       toast.success(`Service ${isEditing ? "updated" : "created"} successfully`);
       router.push("/admin/services");
@@ -104,7 +107,7 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
         </div>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-8">
         {/* Basic Info */}
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-brand-border space-y-6">
           <h2 className="text-xl font-heading font-semibold text-brand-text border-b border-brand-border pb-4 mb-6">Basic Information</h2>

@@ -12,11 +12,22 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     if (!session || !session.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    body.createdAt = undefined; // don't update
+    const { 
+      imageUrl, cloudinaryPublicId, altText, 
+      caption, category, sortOrder, isActive 
+    } = body;
 
     const [updated] = await db
       .update(gallery)
-      .set(body)
+      .set({
+        imageUrl,
+        cloudinaryPublicId,
+        altText: altText || "",
+        caption: caption || null,
+        category: category || "General",
+        sortOrder: sortOrder || 0,
+        isActive: isActive !== undefined ? isActive : true,
+      })
       .where(eq(gallery.id, params.id))
       .returning();
     // Defensive revalidation

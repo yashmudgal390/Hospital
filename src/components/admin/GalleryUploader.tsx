@@ -57,8 +57,19 @@ export function GalleryUploader({
       toast.success("Image uploaded successfully");
       onUploadSuccess(data.url, data.publicId);
     } catch (error: any) {
-      console.error(error);
-      toast.error("Failed to upload image.");
+      console.error("[GalleryUploader Error]:", error);
+      let errorMessage = "Failed to upload image.";
+      
+      try {
+        // Attempt to parse if the error is a JSON string from res.text()
+        const parsed = JSON.parse(error.message);
+        if (parsed.error) errorMessage = parsed.error;
+      } catch (e) {
+        // Not JSON, use the raw message if it exists
+        if (error.message) errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
       setPreview(defaultImage || null); // Revert on failure
     } finally {
       setIsUploading(false);
