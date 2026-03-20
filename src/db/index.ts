@@ -16,25 +16,26 @@ const globalForDb = globalThis as unknown as {
 // Lazy initialization of the postgres client to prevent module-import crashes
 let client: postgres.Sql;
 try {
-  if (isDbConfigured) {
-    client = globalForDb.client ?? postgres(dbUrl, {
-      max: isBuilding ? 1 : 5, 
-      idle_timeout: 20,
-      connect_timeout: 10, 
-      prepare: false, 
-      onnotice: () => {}, 
-      debug: false,
-      ssl: dbUrl.includes("supabase.co") ? "require" : false,
-      // For PGBouncer / Serverless environments
-      transform: {
-        undefined: null,
-      },
-    });
-    if (process.env.NODE_ENV !== "production") globalForDb.client = client;
-  } else {
-    // Return a dummy client that doesn't crash on import
-    client = postgres("postgres://localhost/placeholder", { max: 1 });
-  }
+    // Build-time Hard-Bypass: Don't even try to connect during the build phase
+    // to prevent CONNECT_TIMEOUT from crashing the Vercel build process.
+    if (isDbConfigured && !isBuilding) {
+      client = globalForDb.client ?? postgres(dbUrl, {
+        max: 5, 
+        idle_timeout: 20,
+        connect_timeout: 10, 
+        prepare: false, 
+        onnotice: () => {}, 
+        debug: false,
+        ssl: dbUrl.includes("supabase.co") ? "require" : false,
+        transform: {
+          undefined: null,
+        },
+      });
+      if (process.env.NODE_ENV !== "production") globalForDb.client = client;
+    } else {
+      // Return a dummy client for build-time or if not configured
+      client = postgres("postgres://localhost/placeholder", { max: 1 });
+    }
 } catch (e) {
   // Final fallback to prevent any module-level exceptions
   client = postgres("postgres://localhost/placeholder", { max: 1 });
