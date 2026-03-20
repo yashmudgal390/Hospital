@@ -1,0 +1,65 @@
+{
+  "defaults": [
+    {
+      "column_name": "id",
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "sender_name",
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "sender_email",
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "sender_phone",
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "subject",
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "message",
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "status",
+      "column_default": "'unread'::message_status",
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "admin_notes",
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "is_starred",
+      "column_default": "false",
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "ip_address",
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "created_at",
+      "column_default": "now()",
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "updated_at",
+      "column_default": "now()",
+      "is_nullable": "NO"
+    }
+  ],
+  "error": null
+}

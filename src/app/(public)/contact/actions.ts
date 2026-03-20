@@ -39,10 +39,13 @@ export async function submitContactMessage(data: {
       id: createId(),
       senderName: data.name.trim(),
       senderEmail: data.email.trim(),
-      senderPhone: data.phone?.trim(),
+      senderPhone: data.phone?.trim() || null,
       subject: data.subject.trim(),
       message: data.message.trim(),
       ipAddress: ip,
+      status: "unread",
+      isStarred: false,
+      adminNotes: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -64,12 +67,17 @@ export async function submitContactMessage(data: {
 
     return { success: true };
   } catch (error: any) {
-    console.error("[actions] submitContactMessage error details:", {
-      message: error.message,
-      stack: error.stack,
-      code: error.code
-    });
-    return { error: `Submission failed: ${error.message || "Unknown error"}` };
+    console.error("[actions] submitContactMessage full error:", error);
+    return { 
+      error: `Submission failed: ${error.message || "Unknown error"}`,
+      details: JSON.stringify({
+        code: error.code,
+        detail: error.detail,
+        table: error.table,
+        column: error.column,
+        constraint: error.constraint
+      })
+    };
   }
 }
 
@@ -113,10 +121,12 @@ export async function submitAppointment(data: {
       preferredDate: data.date,
       preferredTime: data.time || null,
       serviceId: data.serviceId || null,
-      serviceName: serviceName,
+      serviceName: serviceName || null,
       reasonForVisit: data.reason.trim(),
       // Treat as a callback request since the clinic must call to confirm
       isCallbackRequest: true,
+      status: "pending",
+      adminNotes: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -137,11 +147,16 @@ export async function submitAppointment(data: {
 
     return { success: true };
   } catch (error: any) {
-    console.error("[actions] submitAppointment error details:", {
-      message: error.message,
-      stack: error.stack,
-      code: error.code
-    });
-    return { error: `Appointment booking failed: ${error.message || "Unknown error"}` };
+    console.error("[actions] submitAppointment full error:", error);
+    return { 
+      error: `Appointment booking failed: ${error.message || "Unknown error"}`,
+      details: JSON.stringify({
+        code: error.code,
+        detail: error.detail,
+        table: error.table,
+        column: error.column,
+        constraint: error.constraint
+      })
+    };
   }
 }

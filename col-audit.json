@@ -1,0 +1,53 @@
+{
+  "columns": [
+    {
+      "column_name": "id",
+      "data_type": "text"
+    },
+    {
+      "column_name": "sender_name",
+      "data_type": "text"
+    },
+    {
+      "column_name": "sender_email",
+      "data_type": "text"
+    },
+    {
+      "column_name": "sender_phone",
+      "data_type": "text"
+    },
+    {
+      "column_name": "subject",
+      "data_type": "text"
+    },
+    {
+      "column_name": "message",
+      "data_type": "text"
+    },
+    {
+      "column_name": "status",
+      "data_type": "USER-DEFINED"
+    },
+    {
+      "column_name": "admin_notes",
+      "data_type": "text"
+    },
+    {
+      "column_name": "is_starred",
+      "data_type": "boolean"
+    },
+    {
+      "column_name": "ip_address",
+      "data_type": "text"
+    },
+    {
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone"
+    },
+    {
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone"
+    }
+  ],
+  "error": null
+}

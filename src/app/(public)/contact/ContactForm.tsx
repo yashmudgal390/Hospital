@@ -83,7 +83,10 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
     setIsSubmitting(true);
     try {
       const res = await submitContactMessage(data);
-      if (res.error) throw new Error(res.error);
+      if (res.error) {
+        if (res.details) console.error("[ContactForm] message error details:", JSON.parse(res.details));
+        throw new Error(res.error);
+      }
       toast.success("Message sent successfully! We'll be in touch soon.");
       msgForm.reset();
     } catch (error: any) {
@@ -97,7 +100,10 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
     setIsSubmitting(true);
     try {
       const res = await submitAppointment(data);
-      if (res.error) throw new Error(res.error);
+      if (res.error) {
+        if (res.details) console.error("[ContactForm] appointment error details:", JSON.parse(res.details));
+        throw new Error(res.error);
+      }
       toast.success("Appointment request received! We will call you shortly to confirm.");
       aptForm.reset();
     } catch (error: any) {
