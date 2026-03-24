@@ -18,6 +18,7 @@ export default async function PublicLayout({
     tagline: "Your health is our priority.",
     logoUrl: null,
     emergencyPhone: "",
+    emergencyNote: "",
     showEmergencyBanner: false,
     appointmentsEnabled: true,
     phone: "Contact Us",

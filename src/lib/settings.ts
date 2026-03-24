@@ -98,6 +98,7 @@ export const getLayoutSettings = unstable_cache(
         address: settings.address,
         operatingHours: settings.operatingHours,
         emergencyPhone: settings.emergencyPhone,
+        emergencyNote: settings.emergencyNote,
         showEmergencyBanner: settings.showEmergencyBanner,
         appointmentsEnabled: settings.appointmentsEnabled,
         mapEmbedUrl: settings.mapEmbedUrl,

@@ -13,6 +13,7 @@ interface NavbarProps {
     clinicName: string;
     logoUrl: string | null;
     emergencyPhone: string | null;
+    emergencyNote?: string | null;
     showEmergencyBanner: boolean;
     appointmentsEnabled: boolean;
   };
@@ -47,18 +48,22 @@ export function Navbar({ settings }: NavbarProps) {
   return (
     <>
       {/* Emergency Banner (Optional) */}
-      {settings?.showEmergencyBanner && settings?.emergencyPhone && (
-        <div className="bg-brand-emergency text-white text-center text-sm font-medium py-2 px-4 animate-fade-in flex items-center justify-center gap-2">
-          <PhoneCall className="h-4 w-4 animate-pulse" />
-          <span>
-            Emergency? Call us immediately at{" "}
+      {settings?.showEmergencyBanner && (settings?.emergencyPhone || settings?.emergencyNote) && (
+        <div className="bg-brand-emergency text-white text-center text-sm font-medium py-2 px-4 animate-fade-in flex flex-col md:flex-row items-center justify-center gap-2">
+          <div className="flex items-center gap-2">
+            <PhoneCall className="h-4 w-4 animate-pulse" />
+            <span>
+              {settings.emergencyNote ? settings.emergencyNote : "Emergency? Call us immediately at "}
+            </span>
+          </div>
+          {settings.emergencyPhone && (
             <a
               href={`tel:${settings.emergencyPhone.replace(/[^\d+]/g, "")}`}
               className="underline font-bold hover:text-brand-background transition"
             >
               {settings.emergencyPhone}
             </a>
-          </span>
+          )}
         </div>
       )}
 
