@@ -14,27 +14,10 @@ export async function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", path);
 
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:;
-    style-src 'self' 'unsafe-inline' https: http:;
-    img-src 'self' blob: data: https: http:;
-    font-src 'self' data: https: http:;
-    connect-src 'self' blob: data: https: http: ws: wss:;
-    frame-src 'self' https: http:;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    upgrade-insecure-requests;
-  `.replace(/\s{2,}/g, " ").trim();
-
-  // Create base response and set pathname
+  // Create base response
   const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
-
-  // Apply CSP to all responses
-  response.headers.set("Content-Security-Policy", cspHeader);
 
   // Handle /admin logic
   if (path.startsWith("/admin") && path !== "/admin/login") {
@@ -47,9 +30,7 @@ export async function middleware(req: NextRequest) {
     if (!session.isAdmin) {
       url.pathname = "/admin/login";
       url.searchParams.set("callbackUrl", path);
-      const redirectRes = NextResponse.redirect(url);
-      redirectRes.headers.set("Content-Security-Policy", cspHeader);
-      return redirectRes;
+      return NextResponse.redirect(url);
     }
   }
 
