@@ -173,8 +173,8 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
               <div className="space-y-6">
                  <h3 className="font-heading font-semibold text-lg text-brand-text mb-2 border-b border-brand-border pb-2">Primary Contact</h3>
                  <Field id="email" label="Public Contact Email" placeholder="info@clinic.com" type="email" autoComplete="email" />
-                 <Field id="phone" label="Public Contact Phone" placeholder="+91" type="tel" autoComplete="tel" />
-                 <Field id="whatsapp" label="WhatsApp Number" placeholder="+91" type="tel" />
+                 <Field id="phone" label="Public Contact Phone" placeholder="+91 98765 43210" type="tel" autoComplete="tel" />
+                 <Field id="whatsapp" label="WhatsApp Number" placeholder="+91 98765 43210" type="tel" />
                  <Field id="address" label="Physical Address" placeholder="123 Lifeline Street..." textarea autoComplete="street-address" />
               </div>
 
@@ -216,7 +216,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                  
                  <div className="mt-8 space-y-4">
                    <h3 className="font-heading font-semibold text-lg text-brand-text mb-2 border-b border-brand-border pb-2">Emergency Banner</h3>
-                   <Field id="emergencyPhone" label="Emergency Phone Number" placeholder="+1 (555) 911-0000" type="tel" />
+                   <Field id="emergencyPhone" label="Emergency Phone Number" placeholder="+91 98765 43210" type="tel" />
                    <div>
                      <Field id="emergencyNote" label="Emergency Banner Text" placeholder="For medical emergencies, call 911 immediately." />
                      <p className="text-xs text-brand-muted mt-1">Leave blank to hide the red banner at the top of the website.</p>
