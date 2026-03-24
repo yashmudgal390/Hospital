@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { GalleryUploader } from "@/components/admin/GalleryUploader";
+import { SimpleImageUploader } from "@/components/admin/SimpleImageUploader";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 const blogSchema = z.object({
@@ -184,21 +184,10 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
            </div>
            
            <div className="bg-white p-8 rounded-2xl shadow-sm border border-brand-border space-y-6">
-              <h2 className="text-xl font-heading font-semibold text-brand-text mb-4 border-b border-brand-border pb-2">SEO Variables</h2>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="blog-slug">URL Slug</Label>
-                  <Input id="blog-slug" {...form.register("slug")} className="rounded-xl font-mono text-sm" />
-                  {form.formState.errors.slug && <p className="text-xs text-red-500">{form.formState.errors.slug.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="blog-meta-title">Meta Title</Label>
-                  <Input id="blog-meta-title" {...form.register("metaTitle")} className="rounded-xl" placeholder="Leave empty to use Post Title" />
-                </div>
-              </div>
               <div className="space-y-2">
-                <Label htmlFor="blog-meta-desc">Meta Description</Label>
-                <Textarea id="blog-meta-desc" {...form.register("metaDescription")} className="rounded-xl" placeholder="Leave empty to use Excerpt" />
+                <Label htmlFor="blog-slug">URL Slug (Auto-generated from title)</Label>
+                <Input id="blog-slug" {...form.register("slug")} className="rounded-xl font-mono text-sm" />
+                {form.formState.errors.slug && <p className="text-xs text-red-500">{form.formState.errors.slug.message}</p>}
               </div>
            </div>
         </div>
@@ -253,7 +242,7 @@ export function BlogEditor({ initialData }: BlogEditorProps) {
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-border space-y-4">
              <h3 className="font-heading font-semibold text-sm uppercase tracking-wider text-brand-muted mb-2">Cover Image</h3>
-             <GalleryUploader 
+             <SimpleImageUploader 
                folder="blog" 
                defaultImage={initialData?.coverImageUrl}
                onUploadSuccess={(url) => form.setValue("coverImageUrl", url)} 

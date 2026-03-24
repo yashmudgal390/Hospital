@@ -84,39 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
             {post.excerpt}
           </p>
 
-          <div className="flex items-center justify-between border-t border-b border-brand-border py-6 mt-10">
-            <div className="flex items-center gap-4">
-              {s?.doctorPhotoUrl ? (
-                <img 
-                  src={s.doctorPhotoUrl} 
-                  alt={s.doctorName || ""} 
-                  className="h-12 w-12 rounded-full object-cover border-2 border-brand-primary/20"
-                />
-              ) : (
-                <div className="h-12 w-12 rounded-full bg-brand-50 flex items-center justify-center text-brand-primary border-2 border-brand-primary/20 font-bold">
-                  {(s?.doctorName || s?.clinicName || "D").charAt(0)}
-                </div>
-              )}
-              <div>
-                <div className="font-semibold text-brand-text leading-tight">{s?.doctorName}</div>
-                <div className="text-xs text-brand-muted">{s?.doctorTitle}</div>
-              </div>
-            </div>
-            
-            {/* Social Share (Links simulated) */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-brand-muted mr-2 hidden sm:inline">Share:</span>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-secondary hover:bg-brand-primary hover:text-white transition-colors">
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-secondary hover:bg-brand-primary hover:text-white transition-colors">
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-secondary hover:bg-brand-primary hover:text-white transition-colors">
-                <Linkedin className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
+
         </div>
       </header>
 
