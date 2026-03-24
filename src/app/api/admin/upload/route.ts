@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
-import { uploadImageBuffer } from "@/lib/cloudinary";
+import { supabaseAdmin } from "@/lib/supabase";
+import { createId } from "@paralleldrive/cuid2";
 
-// Must use Node runtime because the `cloudinary` SDK requires Node APIs
+// Must use Node runtime to safely handle Buffer and FormData
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
@@ -13,59 +14,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("[Upload API] Received upload request...");
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const folder = (formData.get("folder") as string) || "clinic";
 
     if (!file) {
-      console.warn("[Upload API] No file found in form data.");
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    console.log(`[Upload API] File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
-
-    // 3. Convert File to Buffer
+    // 2. Convert File to Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 4. Check if Cloudinary is configured (falsy values, empty strings, or placeholders)
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.replace(/["']/g, "").trim();
-    const apiKey = process.env.CLOUDINARY_API_KEY?.replace(/["']/g, "").trim();
-    const apiSecret = process.env.CLOUDINARY_API_SECRET?.replace(/["']/g, "").trim();
+    // 3. Generate unique filename
+    const fileExt = file.name.split(".").pop() || "jpg";
+    const fileName = `${folder}/${Date.now()}-${createId()}.${fileExt}`;
 
-    const isCloudinaryConfigured = cloudName && apiKey && apiSecret;
-    console.log(`[Upload API] Cloudinary configured: ${isCloudinaryConfigured}`);
-
-    if (!isCloudinaryConfigured) {
-      // DEMO MODE: Return a data URI so the user can test the app without Cloudinary
-      const contentType = file.type || "image/jpeg";
-      const base64 = buffer.toString("base64");
-      const dataUri = `data:${contentType};base64,${base64}`;
-      
-      console.log(`[Upload API] Demo Mode active. Returning DataURI (length: ${dataUri.length}).`);
-      return NextResponse.json({
-        success: true,
-        url: dataUri,
-        publicId: `demo-${Date.now()}`,
+    // 4. Upload to Supabase Storage
+    const { data, error: uploadError } = await supabaseAdmin
+      .storage
+      .from("hospital-images")
+      .upload(fileName, buffer, {
+        contentType: file.type || "image/jpeg",
+        upsert: false,
       });
-    }
 
-    // 4. Upload to Cloudinary
-    const result = await uploadImageBuffer(buffer, folder);
-
-    if (!result) {
+    if (uploadError) {
+      console.error("[Supabase Upload Error]", uploadError);
       return NextResponse.json(
-        { error: "Failed to upload image to Cloudinary" },
+        { error: "Failed to upload image to Supabase Storage", details: String(uploadError) },
         { status: 500 }
       );
     }
 
-    // 5. Return the secure URL and public ID
+    // 5. Get public URL
+    const { data: { publicUrl } } = supabaseAdmin
+      .storage
+      .from("hospital-images")
+      .getPublicUrl(fileName);
+
+    // 6. Return the secure URL and public ID
     return NextResponse.json({
       success: true,
-      url: result.url,
-      publicId: result.publicId,
+      url: publicUrl,
+      publicId: fileName,
     });
   } catch (error: any) {
     console.error("[Upload API Error Details]:", {

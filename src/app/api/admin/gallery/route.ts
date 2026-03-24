@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/db";
 import { gallery } from "@/db/schema/gallery";
 import { getAdminSession } from "@/lib/session";
 import { createId } from "@paralleldrive/cuid2";
 import { revalidatePath, revalidateTag } from "next/cache";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -20,16 +14,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Verify Cloudinary is configured
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    if (!cloudName || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      return NextResponse.json(
-        { error: "Cloudinary environment variables are not configured on the server. Please add them in Vercel." },
-        { status: 500 }
-      );
-    }
-
-    // 3. Parse request body
+    // 2. Parse request body
     const body = await req.json();
     const { imageUrl, imageData, altText, caption, category, sortOrder, isActive, cloudinaryPublicId } = body;
 
@@ -46,21 +31,40 @@ export async function POST(req: Request) {
     let finalUrl = imagePayload;
     let finalPublicId = cloudinaryPublicId || null;
 
-    // 4. Upload to Cloudinary if it's a base64 string
+    // 3. Upload to Supabase Storage if it's a base64 string
     if (imagePayload.startsWith("data:image/")) {
       try {
-        const uploadResult = await cloudinary.uploader.upload(imagePayload, {
-          folder: "hospital-gallery",
-          resource_type: "image",
-          quality: "auto",
-          fetch_format: "auto",
-        });
-        finalUrl = uploadResult.secure_url;
-        finalPublicId = uploadResult.public_id;
+        const base64Data = imagePayload.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, "base64");
+        
+        const mimeMatch = imagePayload.match(/^data:(image\/\w+);base64,/);
+        const contentType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+        const fileExt = contentType.split("/")[1] || "jpg";
+        const fileName = `gallery/${Date.now()}-${createId()}.${fileExt}`;
+
+        const { data, error: uploadError } = await supabaseAdmin
+          .storage
+          .from("hospital-images")
+          .upload(fileName, buffer, {
+            contentType,
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabaseAdmin
+          .storage
+          .from("hospital-images")
+          .getPublicUrl(fileName);
+
+        finalUrl = publicUrl;
+        finalPublicId = fileName;
       } catch (uploadError) {
-        console.error("[Cloudinary Upload Error]", uploadError);
+        console.error("[Supabase Upload Error]", uploadError);
         return NextResponse.json(
-          { error: "Failed to upload image to Cloudinary", details: String(uploadError) },
+          { error: "Failed to upload image to Supabase Storage", details: String(uploadError) },
           { status: 500 }
         );
       }
@@ -68,17 +72,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid image format. Must be a URL or Base64 data URI." }, { status: 400 });
     }
 
-    // 5. Hard stop: Never save base64 data directly to the database
+    // 4. Hard stop: Never save base64 data directly to the database
     if (finalUrl.startsWith("data:image/")) {
       return NextResponse.json({ error: "System attempted to save base64 data to database. Aborting." }, { status: 500 });
     }
 
-    // 6. Save ONLY the Cloudinary URL to database
+    // 5. Save ONLY the URL to database
     const [newImage] = await db
       .insert(gallery)
       .values({
         id: createId(),
-        imageUrl: finalUrl,         // ✅ Cloudinary URL
+        imageUrl: finalUrl,         
         cloudinaryPublicId: finalPublicId,
         altText: altText,
         caption: caption || null,
@@ -89,7 +93,7 @@ export async function POST(req: Request) {
       })
       .returning();
 
-    // 7. Refresh the public page
+    // 6. Refresh the public page
     try {
       revalidateTag("gallery");
       revalidatePath("/gallery");
@@ -108,3 +112,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

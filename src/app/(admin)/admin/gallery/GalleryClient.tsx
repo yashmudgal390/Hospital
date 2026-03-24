@@ -24,12 +24,7 @@ export default function GalleryClient({ data }: { data: GalleryImage[] }) {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // New Image State
-  const [newImageUrl, setNewImageUrl] = useState("");
-  const [newPublicId, setNewPublicId] = useState("");
-  const [newAltText, setNewAltText] = useState("");
-  const [newCaption, setNewCaption] = useState("");
-  const [newCategory, setNewCategory] = useState("Facility");
+  // Form state is now encapsulated in GalleryUploader
 
   const deletePhoto = async (id: string) => {
     if (!confirm("Are you sure you want to delete this photo from the gallery?")) return;
@@ -51,49 +46,7 @@ export default function GalleryClient({ data }: { data: GalleryImage[] }) {
     }
   };
 
-  const handleUploadSuccess = (url: string, publicId: string) => {
-    setNewImageUrl(url);
-    setNewPublicId(publicId);
-  };
-
-  const saveNewImage = async () => {
-    if (!newImageUrl) return toast.error("Please upload an image first");
-
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/admin/gallery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageUrl: newImageUrl,
-          cloudinaryPublicId: newPublicId,
-          altText: newAltText || "Clinic Photo",
-          caption: newCaption || null,
-          category: newCategory,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to save image details");
-      }
-      
-      toast.success("Image added to gallery!");
-      
-      // Reset form
-      setNewImageUrl("");
-      setNewPublicId("");
-      setNewAltText("");
-      setNewCaption("");
-      setNewCategory("Facility");
-      
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add image");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // handleUploadSuccess and saveNewImage are now handled in GalleryUploader
 
   return (
     <div className="space-y-12 animate-fade-in pb-20">
@@ -103,63 +56,12 @@ export default function GalleryClient({ data }: { data: GalleryImage[] }) {
       </div>
 
       {/* Upload Section */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border border-brand-border">
+      {/* Upload Section */}
+      <div className="max-w-2xl mb-12">
         <h2 className="text-xl font-heading font-semibold text-brand-text mb-6 flex items-center gap-2">
           <ImagePlus className="h-5 w-5 text-brand-primary" /> Add New Photo
         </h2>
-        
-        <div className="grid md:grid-cols-2 gap-8 items-start">
-           <div>
-             <GalleryUploader 
-               folder="gallery" 
-               onUploadSuccess={handleUploadSuccess} 
-             />
-           </div>
-           
-           <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Required: Alt Text (for SEO & Accessibility)</Label>
-                <Input 
-                  value={newAltText} 
-                  onChange={e => setNewAltText(e.target.value)} 
-                  placeholder="e.g. Modern dental operating room" 
-                  className="rounded-xl h-11"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Optional: Caption</Label>
-                <Input 
-                  value={newCaption} 
-                  onChange={e => setNewCaption(e.target.value)} 
-                  placeholder="e.g. State-of-the-art equipment in Room A" 
-                  className="rounded-xl h-11"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <select 
-                  value={newCategory} 
-                  onChange={e => setNewCategory(e.target.value)} 
-                  className="flex h-11 w-full items-center justify-between rounded-xl border border-brand-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                >
-                  <option value="Facility">Facility & Rooms</option>
-                  <option value="Team">Team & Doctors</option>
-                  <option value="Events">Clinic Events</option>
-                  <option value="Equipment">Medical Equipment</option>
-                </select>
-              </div>
-              
-              <Button 
-                onClick={saveNewImage} 
-                disabled={!newImageUrl || isSubmitting}
-                className="w-full h-11 rounded-xl bg-brand-primary text-white shadow-button mt-4"
-              >
-                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : "Save to Gallery"}
-              </Button>
-           </div>
-        </div>
+        <GalleryUploader onSuccess={() => router.refresh()} />
       </div>
 
       {/* Grid Display Section */}
