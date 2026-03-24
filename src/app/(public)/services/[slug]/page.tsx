@@ -5,7 +5,7 @@ import { HeartPulse, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { getServiceBySlug } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 interface Props {
   params: { slug: string };

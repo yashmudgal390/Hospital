@@ -6,7 +6,7 @@ import { getServices } from "@/lib/services";
 import { getClinicSettings, getSiteMetadata } from "@/lib/settings";
 import { ArrowRight, HeartPulse } from "lucide-react";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteMetadata();

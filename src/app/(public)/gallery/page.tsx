@@ -6,7 +6,7 @@ import { getClinicSettings, getSiteMetadata } from "@/lib/settings";
 import { Image as ImageIcon, Loader2 } from "lucide-react";
 import { Suspense } from "react";
 
-export const revalidate = 3600; // Enable ISR for better performance
+export const revalidate = 0; // Disable ISR for instant updates
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteMetadata();

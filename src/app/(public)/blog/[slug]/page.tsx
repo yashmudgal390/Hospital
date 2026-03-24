@@ -6,7 +6,7 @@ import { formatDate, estimateReadingTime } from "@/lib/utils";
 import { getBlogPostBySlug, getRelatedPosts } from "@/lib/blog";
 import { getClinicSettings } from "@/lib/settings";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 interface Props {
   params: { slug: string };

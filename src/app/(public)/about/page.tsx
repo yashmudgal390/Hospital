@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { isDbConfigured } from "@/db";
 import { getClinicSettings, getSiteMetadata, getDoctorPhoto, getAboutImage } from "@/lib/settings";
 
-export const revalidate = 3600; // Enable ISR for better performance
+export const revalidate = 0; // Disable ISR for instant updates
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSiteMetadata();

@@ -1,4 +1,5 @@
-import { unstable_cache } from "next/cache"
+// Bypass Next.js aggressive caching to ensure admin updates are instantly visible
+const unstable_cache = <T extends (...args: any[]) => Promise<any>>(cb: T, keys?: string[], opts?: any) => cb;
 import { db, isDbConfigured, isBuilding } from "@/db"
 import { settings } from "@/db/schema/settings"
 

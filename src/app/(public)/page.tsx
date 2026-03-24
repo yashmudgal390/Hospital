@@ -15,7 +15,7 @@ const Antigravity = dynamic(() => import("@/components/ui/Antigravity"), {
   ssr: false 
 });
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export default async function HomePage() {
   let siteSettings: any = null;
