@@ -215,7 +215,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                  </div>
                  
                  <div className="mt-8">
-                   <Field id="emergencyBannerText" label="Emergency Banner Text" placeholder="For medical emergencies, call 911 immediately." />
+                   <Field id="emergencyNote" label="Emergency Banner Text" placeholder="For medical emergencies, call 911 immediately." />
                    <p className="text-xs text-brand-muted mt-1">Leave blank to hide the red banner at the top of the website.</p>
                  </div>
               </div>
