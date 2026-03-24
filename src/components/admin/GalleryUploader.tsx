@@ -188,7 +188,7 @@ export function GalleryUploader({ onSuccess }: GalleryUploaderProps) {
           className="w-full h-11 bg-brand-primary text-white rounded-xl py-2 mt-2 text-sm font-medium transition-colors hover:bg-brand-secondary shadow-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isUploading ? (
-            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading to Cloudinary...</>
+            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...</>
           ) : (
              "Save to Gallery"
           )}

@@ -19,6 +19,13 @@ function getIp() {
   return "127.0.0.1";
 }
 
+// Helper: safely parse a date string into a Date object or null
+function safeParseDate(val: any): Date | null {
+  if (!val || val === "") return null;
+  const d = new Date(val);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 export async function submitContactMessage(data: {
   name: string;
   email: string;
@@ -50,19 +57,23 @@ export async function submitContactMessage(data: {
       updatedAt: new Date(),
     });
 
-    // Send email notification to admin
-    if (adminNotifyEmail) {
-      await sendEmail({
-        to: adminNotifyEmail,
-        subject: `New Message: ${data.subject.trim()}`,
-        react: ContactMessageEmail({
-          senderName: data.name.trim(),
-          senderEmail: data.email.trim(),
-          senderPhone: data.phone?.trim(),
-          subject: data.subject.trim(),
-          message: data.message.trim(),
-        }),
-      });
+    // Send email notification to admin — isolated so SMTP failures don't crash the route
+    try {
+      if (adminNotifyEmail) {
+        await sendEmail({
+          to: adminNotifyEmail,
+          subject: `New Message: ${data.subject.trim()}`,
+          react: ContactMessageEmail({
+            senderName: data.name.trim(),
+            senderEmail: data.email.trim(),
+            senderPhone: data.phone?.trim(),
+            subject: data.subject.trim(),
+            message: data.message.trim(),
+          }),
+        });
+      }
+    } catch (emailError) {
+      console.error("[actions] Email notification failed (message still saved):", emailError);
     }
 
     return { success: true };
@@ -99,18 +110,35 @@ export async function submitAppointment(data: {
     }
 
     // Check if appointments are globally disabled
-    const [s] = await db.select({ enabled: settings.appointmentsEnabled }).from(settings).where(eq(settings.id, "main")).limit(1);
-    
-    if (s && s.enabled === false) {
-      return { error: "Online appointment booking is currently disabled. Please call us directly." };
+    try {
+      const [s] = await db.select({ enabled: settings.appointmentsEnabled }).from(settings).where(eq(settings.id, "main")).limit(1);
+      if (s && s.enabled === false) {
+        return { error: "Online appointment booking is currently disabled. Please call us directly." };
+      }
+    } catch (settingsError) {
+      // If settings lookup fails, allow the appointment through
+      console.warn("[actions] Settings check failed, allowing appointment:", settingsError);
     }
 
     // Resolve service name if ID was provided
-    let serviceName = undefined;
+    let serviceName: string | null = null;
     if (data.serviceId) {
-      const [svc] = await db.select({ name: services.name }).from(services).where(eq(services.id, data.serviceId)).limit(1);
-      if (svc) serviceName = svc.name;
+      try {
+        const [svc] = await db.select({ name: services.name }).from(services).where(eq(services.id, data.serviceId)).limit(1);
+        if (svc) serviceName = svc.name;
+      } catch (svcError) {
+        console.warn("[actions] Service lookup failed:", svcError);
+      }
     }
+
+    // Sanitize the preferred date
+    const parsedDate = safeParseDate(data.date);
+    const preferredDateStr = parsedDate 
+      ? parsedDate.toISOString().split("T")[0]  // "YYYY-MM-DD" format
+      : data.date?.trim() || "Not specified";
+
+    // Generate a reference number
+    const referenceNo = `APT-${Math.floor(1000 + Math.random() * 9000)}`;
 
     // Insert into DB with manual ID and timestamps for stability
     await db.insert(appointments).values({
@@ -118,12 +146,11 @@ export async function submitAppointment(data: {
       patientName: data.name.trim(),
       patientPhone: data.phone.trim(),
       patientEmail: data.email?.trim() || null,
-      preferredDate: data.date,
-      preferredTime: data.time || null,
+      preferredDate: preferredDateStr,
+      preferredTime: data.time?.trim() || null,
       serviceId: data.serviceId || null,
-      serviceName: serviceName || null,
+      serviceName: serviceName,
       reasonForVisit: data.reason.trim(),
-      // Treat as a callback request since the clinic must call to confirm
       isCallbackRequest: true,
       status: "pending",
       adminNotes: null,
@@ -131,21 +158,25 @@ export async function submitAppointment(data: {
       updatedAt: new Date(),
     });
 
-    // Send email notification to admin
-    if (adminNotifyEmail) {
-      await sendEmail({
-        to: adminNotifyEmail,
-        subject: `🚨 Appointment Request: ${data.name.trim()}`,
-        react: CallbackRequestEmail({
-          patientName: data.name.trim(),
-          patientPhone: data.phone.trim(),
-          preferredDate: data.date,
-          preferredTime: data.time || undefined,
-        }),
-      });
+    // Send email notification to admin — isolated so SMTP failures don't crash the route
+    try {
+      if (adminNotifyEmail) {
+        await sendEmail({
+          to: adminNotifyEmail,
+          subject: `🚨 Appointment Request: ${data.name.trim()}`,
+          react: CallbackRequestEmail({
+            patientName: data.name.trim(),
+            patientPhone: data.phone.trim(),
+            preferredDate: preferredDateStr,
+            preferredTime: data.time?.trim() || undefined,
+          }),
+        });
+      }
+    } catch (emailError) {
+      console.error("[actions] Email notification failed (appointment still saved):", emailError);
     }
 
-    return { success: true };
+    return { success: true, referenceNo };
   } catch (error: any) {
     console.error("[actions] submitAppointment full error:", error);
     return { 
@@ -160,3 +191,4 @@ export async function submitAppointment(data: {
     };
   }
 }
+
