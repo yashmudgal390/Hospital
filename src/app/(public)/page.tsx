@@ -32,7 +32,7 @@ export default async function HomePage() {
 
       siteSettings = settingsRes;
       featuredServices = Array.isArray(servicesRes) ? servicesRes.slice(0, 4) : [];
-      latestPosts = Array.isArray(blogRes) ? blogRes.slice(0, 3) : [];
+      latestPosts = Array.isArray(blogRes) ? blogRes.slice(0, 4) : [];
     } catch (err) {
       console.warn("[HomePage] data error:", (err as Error).message);
     }
@@ -231,7 +231,7 @@ export default async function HomePage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {latestPosts.map((post) => (
                 <Link 
                   key={post.id} 

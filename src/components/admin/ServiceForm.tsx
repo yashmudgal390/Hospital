@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { GalleryUploader } from "@/components/admin/GalleryUploader";
+import { SimpleImageUploader } from "@/components/admin/SimpleImageUploader";
 
 const serviceSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -127,7 +127,7 @@ export function ServiceForm({ initialData }: ServiceFormProps) {
 
           <div className="space-y-2">
              <Label>Cover Image</Label>
-             <GalleryUploader 
+             <SimpleImageUploader 
                folder="services" 
                defaultImage={initialData?.imageUrl}
                onUploadSuccess={(url) => form.setValue("imageUrl", url)} 

@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GalleryUploader } from "@/components/admin/GalleryUploader";
+import { SimpleImageUploader } from "@/components/admin/SimpleImageUploader";
 import { HoursEditor } from "@/components/admin/HoursEditor";
 import { getValidMapEmbedUrl } from "@/lib/utils";
 import { Info } from "lucide-react";
@@ -117,8 +117,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
 
                    <div className="space-y-2">
                      <Label htmlFor="settings-hero-upload">Hero Image (Homepage)</Label>
-                     <GalleryUploader 
-                       id="settings-hero-upload"
+                     <SimpleImageUploader 
                        folder="settings" 
                        defaultImage={initialData?.heroImageUrl}
                        onUploadSuccess={(url) => form.setValue("heroImageUrl", url)} 
@@ -225,8 +224,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    
                    <div className="space-y-2">
                      <Label htmlFor="settings-doctor-photo">Doctor Profile Photo</Label>
-                     <GalleryUploader 
-                       id="settings-doctor-photo"
+                     <SimpleImageUploader 
                        folder="settings" 
                        defaultImage={initialData?.doctorPhotoUrl}
                        onUploadSuccess={(url) => form.setValue("doctorPhotoUrl", url)} 
@@ -247,8 +245,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
 
                    <div className="space-y-2">
                      <Label htmlFor="settings-about-image">Clinic Interior Photo (/about page)</Label>
-                     <GalleryUploader 
-                       id="settings-about-image"
+                     <SimpleImageUploader 
                        folder="settings" 
                        defaultImage={initialData?.aboutImageUrl}
                        onUploadSuccess={(url) => form.setValue("aboutImageUrl", url)} 
