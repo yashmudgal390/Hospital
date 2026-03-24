@@ -25,18 +25,45 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Transform initial qualifications JSON array to newline string
+  let initialQuals = "";
+  if (initialData?.doctorQualifications) {
+    try {
+      const parsed = JSON.parse(initialData.doctorQualifications);
+      if (Array.isArray(parsed)) {
+        initialQuals = parsed.join("\n");
+      } else {
+        initialQuals = initialData.doctorQualifications;
+      }
+    } catch {
+      initialQuals = String(initialData.doctorQualifications);
+    }
+  }
+
   // We are using react-hook-form without Zod here because settings covers ~20 optional text fields.
   const form = useForm({
-    defaultValues: initialData || {},
+    defaultValues: {
+      ...(initialData || {}),
+      doctorQualifications: initialQuals,
+    },
   });
 
   async function onSubmit(data: any) {
+    let finalQuals = data.doctorQualifications;
+    if (finalQuals && typeof finalQuals === "string") {
+      const lines = finalQuals.split("\n").map((l: string) => l.trim()).filter(Boolean);
+      finalQuals = JSON.stringify(lines);
+    } else if (!finalQuals) {
+      finalQuals = "[]";
+    }
+    const payload = { ...data, doctorQualifications: finalQuals };
+    
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -145,10 +172,10 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                  <h3 className="font-heading font-semibold text-lg text-brand-text mb-2 border-b border-brand-border pb-2">Primary Contact</h3>
-                 <Field id="contactEmail" label="Public Contact Email" placeholder="info@clinic.com" type="email" autoComplete="email" />
-                 <Field id="contactPhone" label="Public Contact Phone" placeholder="+91" type="tel" autoComplete="tel" />
-                 <Field id="whatsapp" label="WhatsApp Number (Optional)" placeholder="+91" type="tel" />
-                 <Field id="address" label="Physical Address" placeholder="123 Health Ave..." textarea autoComplete="street-address" />
+                 <Field id="email" label="Public Contact Email" placeholder="info@clinic.com" type="email" autoComplete="email" />
+                 <Field id="phone" label="Public Contact Phone" placeholder="+91" type="tel" autoComplete="tel" />
+                 <Field id="whatsapp" label="WhatsApp Number" placeholder="+91" type="tel" />
+                 <Field id="address" label="Physical Address" placeholder="123 Lifeline Street..." textarea autoComplete="street-address" />
               </div>
 
               <div className="space-y-6">
@@ -234,7 +261,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                      )}
                    </div>
 
-                   <Field id="doctorQualifications" label="Qualifications List (JSON Array)" placeholder={'["Harvard Medical School", "Board Certified"]'} textarea />
+                   <Field id="doctorQualifications" label="Qualifications (One per line)" placeholder={'MBBS — Medical University, 2005\nMD Internal Medicine — General Hospital, 2009'} textarea />
                 </div>
                 
                 <div className="space-y-6">
