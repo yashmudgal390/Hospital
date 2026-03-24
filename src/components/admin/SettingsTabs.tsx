@@ -214,9 +214,13 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    ) : null}
                  </div>
                  
-                 <div className="mt-8">
-                   <Field id="emergencyNote" label="Emergency Banner Text" placeholder="For medical emergencies, call 911 immediately." />
-                   <p className="text-xs text-brand-muted mt-1">Leave blank to hide the red banner at the top of the website.</p>
+                 <div className="mt-8 space-y-4">
+                   <h3 className="font-heading font-semibold text-lg text-brand-text mb-2 border-b border-brand-border pb-2">Emergency Banner</h3>
+                   <Field id="emergencyPhone" label="Emergency Phone Number" placeholder="+1 (555) 911-0000" type="tel" />
+                   <div>
+                     <Field id="emergencyNote" label="Emergency Banner Text" placeholder="For medical emergencies, call 911 immediately." />
+                     <p className="text-xs text-brand-muted mt-1">Leave blank to hide the red banner at the top of the website.</p>
+                   </div>
                  </div>
               </div>
             </div>
