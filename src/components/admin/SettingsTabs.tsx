@@ -248,6 +248,7 @@ export function SettingsTabs({ initialData }: SettingsTabsProps) {
                    </div>
                    <Field id="doctorSpecialty" label="Specialty" placeholder="Internal Medicine" />
                    <Field id="doctorExperience" label="Years of Experience" placeholder="15" type="number" />
+                   <Field id="doctorBio" label="About the Doctor / Biography" placeholder="Dr. Smith is a board-certified specialist with over 15 years..." textarea />
                    
                    <div className="space-y-2">
                      <Label htmlFor="settings-doctor-photo">Doctor Profile Photo</Label>
