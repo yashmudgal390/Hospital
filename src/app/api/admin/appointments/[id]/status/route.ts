@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
-import { db } from "@/db";
+import { db, isDbConfigured } from "@/db";
 import { appointments } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
