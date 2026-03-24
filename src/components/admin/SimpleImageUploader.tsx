@@ -25,8 +25,8 @@ export function SimpleImageUploader({ folder = "general", defaultImage, onUpload
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Image must be smaller than 10MB");
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error("Image must be smaller than 4MB");
       return;
     }
 
@@ -51,10 +51,19 @@ export function SimpleImageUploader({ folder = "general", defaultImage, onUpload
         body: formData,
       });
 
+      if (!response.ok) {
+        if (response.status === 413) throw new Error("Image is too large (max 4MB)");
+        let errorMsg = "Upload failed";
+        try {
+          const errData = await response.json();
+          errorMsg = errData.error || errorMsg;
+        } catch {
+          errorMsg = response.statusText || errorMsg;
+        }
+        throw new Error(errorMsg);
+      }
+
       const data = await response.json();
-
-      if (!response.ok) throw new Error(data.error || "Upload failed");
-
       toast.success("Image uploaded successfully!");
       onUploadSuccess(data.url);
     } catch (error: any) {
@@ -120,7 +129,7 @@ export function SimpleImageUploader({ folder = "general", defaultImage, onUpload
             <p className="text-sm font-medium text-brand-text mb-1">
               {isUploading ? "Uploading..." : "Click to select image"}
             </p>
-            {!isUploading && <p className="text-xs">JPG, PNG, WebP — max 10MB</p>}
+            {!isUploading && <p className="text-xs">JPG, PNG, WebP — max 4MB</p>}
           </div>
         )}
       </div>

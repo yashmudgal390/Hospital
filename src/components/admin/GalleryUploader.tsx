@@ -28,9 +28,9 @@ export function GalleryUploader({ onSuccess }: GalleryUploaderProps) {
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Image must be smaller than 10MB");
+    // Validate file size (max 4MB)
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error("Image must be smaller than 4MB");
       return;
     }
 
@@ -65,11 +65,19 @@ export function GalleryUploader({ onSuccess }: GalleryUploaderProps) {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Upload failed");
+        if (response.status === 413) throw new Error("Image is too large (max 4MB)");
+        let errorMsg = "Upload failed";
+        try {
+          const errData = await response.json();
+          errorMsg = errData.error || errorMsg;
+        } catch {
+          errorMsg = response.statusText || errorMsg;
+        }
+        throw new Error(errorMsg);
       }
+
+      await response.json();
 
       toast.success("Photo added to gallery!");
       
@@ -118,7 +126,7 @@ export function GalleryUploader({ onSuccess }: GalleryUploaderProps) {
               <UploadCloud className="h-6 w-6" />
             </div>
             <p className="text-sm font-medium text-brand-text mb-1">Click to select image</p>
-            <p className="text-xs">JPG, PNG, WebP — max 10MB</p>
+            <p className="text-xs">JPG, PNG, WebP — max 4MB</p>
           </div>
         )}
       </div>
