@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, X, PhoneCall, Phone } from "lucide-react";
+import { Menu, X, PhoneCall, Phone, HeartPulse } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
@@ -90,8 +90,8 @@ export function Navbar({ settings }: NavbarProps) {
                 />
               </div>
             ) : (
-              <div className="h-10 w-10 bg-gradient-brand text-white rounded-lg flex items-center justify-center font-heading font-bold text-xl shadow-button">
-                {(settings?.clinicName || "H").charAt(0)}
+              <div className="h-10 w-10 bg-gradient-brand text-white rounded-lg flex items-center justify-center shadow-button">
+                <HeartPulse className="h-6 w-6" />
               </div>
             )}
             <span className="font-heading font-bold text-xl md:text-2xl text-brand-text tracking-tight group-hover:text-brand-primary transition-colors">

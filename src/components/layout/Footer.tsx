@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Phone, Mail, Clock, ArrowRight } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ArrowRight, HeartPulse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Settings } from "@/db/schema/settings";
 
@@ -56,8 +56,8 @@ export function Footer({ settings, services }: FooterProps) {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <div className="h-10 w-10 bg-brand-primary rounded-lg flex items-center justify-center font-heading font-bold text-xl">
-                    {(settings?.clinicName || "H").charAt(0)}
+                  <div className="h-10 w-10 bg-brand-primary rounded-lg flex items-center justify-center text-white">
+                    <HeartPulse className="h-6 w-6" />
                   </div>
                   <span className="font-heading font-bold text-xl tracking-tight text-white group-hover:text-brand-200 transition-colors">
                     {settings?.clinicName}
