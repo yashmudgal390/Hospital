@@ -182,10 +182,21 @@ export function GalleryUploader({ onSuccess }: GalleryUploaderProps) {
         </div>
 
         {/* Submit */}
+        {(!imageData || !altText.trim()) && (
+          <p className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mt-2">
+            {!imageData 
+              ? "⬆️ Click the dashed area above to select an image first" 
+              : "✏️ Fill in the Alt Text field above to enable upload"}
+          </p>
+        )}
         <button
           onClick={handleSubmit}
-          disabled={isUploading || !imageData || !altText}
-          className="w-full h-11 bg-brand-primary text-white rounded-xl py-2 mt-2 text-sm font-medium transition-colors hover:bg-brand-secondary shadow-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          disabled={isUploading || !imageData || !altText.trim()}
+          className={`w-full h-11 rounded-xl py-2 mt-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            isUploading || !imageData || !altText.trim()
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-brand-primary text-white hover:bg-brand-secondary shadow-button"
+          }`}
         >
           {isUploading ? (
             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...</>
