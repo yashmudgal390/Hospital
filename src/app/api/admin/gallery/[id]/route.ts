@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/session";
 import { db } from "@/db";
-import { gallery } from "@/db/schema";
+import { gallery } from "@/db/schema/gallery";
 import { eq } from "drizzle-orm";
-import { deleteImageByUrl } from "@/lib/cloudinary";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getAdminSession();
-    if (!session || !session.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session || !session.isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await req.json();
     const { 
@@ -21,7 +23,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       .update(gallery)
       .set({
         imageUrl,
-        cloudinaryPublicId,
+        cloudinaryPublicId, // Keeps the reference for deletion
         altText: altText || "",
         caption: caption || null,
         category: category || "General",
@@ -30,6 +32,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       })
       .where(eq(gallery.id, params.id))
       .returning();
+
     // Defensive revalidation
     try {
       revalidateTag("gallery");
@@ -48,16 +51,26 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getAdminSession();
-    if (!session || !session.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session || !session.isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // Find the record first to get the URL
     const [record] = await db.select().from(gallery).where(eq(gallery.id, params.id)).limit(1);
     
-    if (record && record.imageUrl) {
-      // Attempt to delete from Cloudinary
-       await deleteImageByUrl(record.imageUrl).catch(err => {
-         console.warn("Failed to delete from Cloudinary, continuing DB deletion:", err);
-       });
+    if (record && record.cloudinaryPublicId) {
+      // We previously saved the Supabase Storage filename in the cloudinaryPublicId field during upload
+      const fileName = record.cloudinaryPublicId;
+      console.log(`[Supabase Storage] Deleting file: ${fileName}`);
+      
+      const { error } = await supabaseAdmin
+        .storage
+        .from("hospital-images")
+        .remove([fileName]);
+
+      if (error) {
+         console.warn("Failed to delete from Supabase Storage, continuing DB deletion:", error);
+      }
     }
 
     await db.delete(gallery).where(eq(gallery.id, params.id));
@@ -76,3 +89,4 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ error: "Error deleting gallery photo" }, { status: 500 });
   }
 }
+
