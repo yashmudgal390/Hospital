@@ -141,21 +141,24 @@ export async function submitAppointment(data: {
     const referenceNo = `APT-${Math.floor(1000 + Math.random() * 9000)}`;
 
     // Insert into DB with manual ID and timestamps for stability
+    const now = new Date();
     await db.insert(appointments).values({
       id: createId(),
       patientName: data.name.trim(),
       patientPhone: data.phone.trim(),
       patientEmail: data.email?.trim() || null,
+      patientAge: null,
+      patientGender: null,
       preferredDate: preferredDateStr,
       preferredTime: data.time?.trim() || null,
-      serviceId: data.serviceId || null,
-      serviceName: serviceName,
-      reasonForVisit: data.reason.trim(),
+      serviceId: data.serviceId?.trim() || null,
+      serviceName: serviceName || null,
+      reasonForVisit: data.reason?.trim() || null,
       isCallbackRequest: true,
       status: "pending",
       adminNotes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
     });
 
     // Send email notification to admin — isolated so SMTP failures don't crash the route
