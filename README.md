@@ -1,95 +1,95 @@
-# 🏥 Dr. Clinic — Single-Doctor Clinic Website
+# Hospital & Clinic Management Website
 
-A production-ready, fully editable single-doctor clinic website built with **Next.js 14**, **Drizzle ORM + Neon PostgreSQL**, and the **Healing Teal** design system.
+A modern, full-stack hospital website and content management system built with Next.js 14, Tailwind CSS, and Supabase.
+
+**Live Demo:** [https://hospital-three-livid.vercel.app/](https://hospital-three-livid.vercel.app/)
+
+## ✨ Features
+
+### Public Frontend
+- **Dynamic Content:** Real-time updates from the database without redeploying.
+- **Services Showcase:** Dedicated pages for medical services.
+- **Health Blog & Gallery:** Fully dynamic gallery grid and markdown-supported health blog.
+- **Emergency Banner:** High-visibility banner for critical contact numbers.
+- **Fully Responsive:** Mobile-first design that looks beautiful on all devices and screen sizes.
+- **Accessibility:** Built-in accessibility toolbar for adjusting text size, contrast, and more.
+- **SEO Optimized:** Dynamic meta tags and clean URL structure for search engine visibility.
+
+### Admin Dashboard (CMS)
+- **Secure Authentication:** Cookie-based session management using `iron-session`.
+- **Global Settings Manager:** Edit hospital name, tagline, operating hours, SEO tags, and social links instantly.
+- **Blog & Gallery CMS:** Create, edit, and delete blog posts and gallery photos.
+- **File Uploads:** Integrated with Supabase Storage for seamless media management.
+- **Contact & Appointment Inbox:** View patient submissions with status tracking directly in the dashboard.
 
 ---
 
-## ⚡ 5-Step Setup
+## 🛠️ Technology Stack
 
-### Step 1 — Clone & Install Dependencies
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS + `shadcn/ui` components
+- **Database:** PostgreSQL (hosted on [Supabase](https://supabase.com))
+- **ORM:** Drizzle ORM
+- **Authentication:** `iron-session` + bcryptjs
+- **Icons:** Lucide React
 
+---
+
+## 🚀 Quick Start Guide
+
+### 1. Clone & Install
 ```bash
 git clone <your-repo-url>
 cd hospital
 npm install
 ```
 
-### Step 2 — Configure Environment Variables
+### 2. Environment Variables
+Create a `.env.local` file in the root of your project and add the following keys:
+```env
+# Supabase PostgreSQL (Transaction Pooler - Port 6543)
+DATABASE_URL="postgresql://<user>:<password>@<host>:6543/postgres?pgbouncer=true"
 
-Copy `.env.example` to `.env.local` and fill in every value:
+# Supabase Storage 
+NEXT_PUBLIC_SUPABASE_URL="https://<your-project>.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="<your-service-role-key>"
 
-```bash
-cp .env.example .env.local
+# Admin Authentication
+ADMIN_EMAIL="admin@clinic.com"
+ADMIN_PASSWORD_HASH="$2b$10$..." # Use bcrypt to generate a hash for your password
+SESSION_SECRET="must-be-at-least-32-characters-long-secret"
+
+# Site Configuration
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+NEXT_PUBLIC_SITE_NAME="Dr. Clinic"
 ```
 
-Generate the admin password hash using the built-in script:
-
+### 3. Database Setup (Drizzle)
+Push the schema to your Supabase database:
 ```bash
-node -e "const b = require('bcryptjs'); b.hash('YOUR_PASSWORD', 12).then(h => console.log(h))"
+npx drizzle-kit push:pg
 ```
 
-Paste the output as `ADMIN_PASSWORD_HASH` in `.env.local`.
-
-### Step 3 — Set Up the Database
-
-Push the Drizzle schema to your Neon database:
-
-```bash
-npx drizzle-kit push
-```
-
-Seed the default `settings` row (run once):
-
-```bash
-npx tsx src/db/seed.ts
-```
-
-### Step 4 — Initialize shadcn/ui Components
-
-```bash
-npx shadcn-ui@latest init
-npx shadcn-ui@latest add button card input textarea label dialog toast sheet table tabs switch badge scroll-area
-```
-
-### Step 5 — Run the Development Server
-
+### 4. Run the Development Server
 ```bash
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) for the public site.  
-Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login) for the admin panel.
+Open [http://localhost:3000](http://localhost:3000) to view the public site.
+Open [http://localhost:3000/admin](http://localhost:3000/admin) to log into the dashboard.
 
 ---
 
-## 📁 Project Structure
+## 📚 Project Structure
 
-```
-src/
-├── app/
-│   ├── (public)/          # Public-facing pages
-│   └── (admin)/           # Admin panel pages
-├── components/
-│   ├── layout/            # Navbar, Footer, TopBar
-│   ├── admin/             # Admin UI components
-│   └── accessibility/     # Accessibility toolbar
-├── db/
-│   ├── index.ts           # Drizzle client
-│   └── schema/            # All schema definitions
-├── lib/                   # Utils, auth, email, cloudinary
-├── emails/                # React Email templates
-└── middleware.ts           # Route protection
-```
+- `src/app/(public)`: All public-facing routes (Home, About, Services, Blog, Gallery, Contact).
+- `src/app/(admin)`: Secure admin dashboard and CMS panels.
+- `src/app/api`: Serverless API routes handling form submissions and admin mutations.
+- `src/components`: Reusable UI components (Navbar, Footer, Forms, Tables).
+- `src/db`: Drizzle ORM configuration and SQL schema definitions.
+- `src/lib`: Utility functions, session management, and settings fetchers.
 
-## 🔐 Environment Variables
-
-See `.env.example` for a full list. Required at minimum:
-- `DATABASE_URL` — Neon PostgreSQL connection string
-- `ADMIN_EMAIL` — Doctor's login email
-- `ADMIN_PASSWORD_HASH` — bcrypt hash of the login password
-- `SESSION_SECRET` — 32+ character random string for iron-session
-- `CLOUDINARY_*` — Cloudinary credentials for image uploads
-
-## 🚀 Deployment
-
-Deploy to **Vercel** with zero configuration. Set all environment variables in the Vercel dashboard. The `DATABASE_URL` from Neon works perfectly in serverless environments.
+## 🔒 Security Notes
+- The default Vercel deployment utilizes Supabase's IPv4 **Transaction Pooler** (Port `6543`) to prevent Serverless connection exhaustion.
+- Admin authentication is handled efficiently without a database roundtrip using encrypted cookies via `iron-session`.
+- All `POST` / `PUT` / `DELETE` API routes are protected by robust authorization and payload checks.
