@@ -15,7 +15,7 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -107,7 +107,11 @@ export function AdminSidebar() {
             <div className="font-heading font-bold text-2xl text-brand-primary mb-8 px-4">
               Hospital<span className="text-brand-text">Admin</span>
             </div>
-            <NavLinks />
+            <SheetClose asChild>
+              <div>
+                <NavLinks />
+              </div>
+            </SheetClose>
           </SheetContent>
         </Sheet>
       </div>

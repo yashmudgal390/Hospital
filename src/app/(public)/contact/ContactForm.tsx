@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { submitContactMessage, submitAppointment } from "./actions";
+import { playSuccessSound } from "@/lib/sounds";
 
 // Zod schemas
 const messageSchema = z.object({
@@ -87,6 +88,7 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
         if (res.details) console.error("[ContactForm] message error details:", JSON.parse(res.details));
         throw new Error(res.error);
       }
+      playSuccessSound();
       toast.success("Message sent successfully! We'll be in touch soon.");
       msgForm.reset();
     } catch (error: any) {
@@ -104,6 +106,7 @@ export function ContactForm({ services, appointmentsEnabled }: ContactFormProps)
         if (res.details) console.error("[ContactForm] appointment error details:", JSON.parse(res.details));
         throw new Error(res.error);
       }
+      playSuccessSound();
       toast.success("Appointment request received! We will call you shortly to confirm.");
       aptForm.reset();
     } catch (error: any) {

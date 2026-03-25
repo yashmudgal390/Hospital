@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Star, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { playSuccessSound } from "@/lib/sounds";
 
 export function ReviewForm() {
   const [rating, setRating] = useState(0);
@@ -32,6 +33,7 @@ export function ReviewForm() {
 
       if (!res.ok) throw new Error("Submission failed");
 
+      playSuccessSound();
       setIsSuccess(true);
       toast.success("Review submitted! It will appear once approved.");
     } catch (err) {

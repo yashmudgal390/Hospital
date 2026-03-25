@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/Sidebar";
+import { AdminNotificationPoller } from "@/components/admin/AdminNotificationPoller";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/session";
 import { headers } from "next/headers";
@@ -28,10 +29,11 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-brand-bg font-sans">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-brand-bg font-sans">
+      <AdminNotificationPoller />
       <AdminSidebar />
-      <main className="flex-1 p-6 lg:p-10 overflow-x-hidden overflow-y-auto w-full max-w-[100vw] lg:max-w-none">
-        <div className="max-w-6xl mx-auto pb-20">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto w-full">
+        <div className="max-w-6xl mx-auto p-6 lg:p-10 pb-20">
           {children}
         </div>
       </main>
