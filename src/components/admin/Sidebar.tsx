@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut,
   Menu,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
   { name: "Blog Posts", href: "/admin/blog", icon: BookOpen },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
+  { name: "Reviews", href: "/admin/reviews", icon: Star },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

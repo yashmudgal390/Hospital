@@ -14,6 +14,8 @@ import dynamic from "next/dynamic";
 const Antigravity = dynamic(() => import("@/components/ui/Antigravity"), { 
   ssr: false 
 });
+import { ReviewCarousel } from "@/components/public/ReviewCarousel";
+import { ReviewForm } from "@/components/public/ReviewForm";
 
 export const revalidate = 0;
 
@@ -310,6 +312,24 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Patient Reviews Section */}
+      <section className="py-24 bg-brand-bg relative border-t border-brand-border/50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-text mb-4">Patient Testimonials</h2>
+            <p className="text-lg text-brand-muted">Real stories and feedback from people who trusted us with their care.</p>
+          </div>
+          
+          <div className="mb-20">
+            <ReviewCarousel />
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            <ReviewForm />
           </div>
         </div>
       </section>
