@@ -10,7 +10,8 @@ A modern, full-stack hospital website and content management system built with N
 - **Dynamic Content:** Real-time updates from the database without redeploying.
 - **Services Showcase:** Dedicated pages for medical services.
 - **Health Blog & Gallery:** Fully dynamic gallery grid and markdown-supported health blog.
-- **Emergency Banner:** High-visibility banner for critical contact numbers.
+- **Patient Testimonials:** Clean, interactive UI for collecting and displaying verified patient reviews on the homepage.
+- **Emergency Banner:** High-visibility banner for critical contact numbers powered directly by the CMS.
 - **Fully Responsive:** Mobile-first design that looks beautiful on all devices and screen sizes.
 - **Accessibility:** Built-in accessibility toolbar for adjusting text size, contrast, and more.
 - **SEO Optimized:** Dynamic meta tags and clean URL structure for search engine visibility.
@@ -19,7 +20,8 @@ A modern, full-stack hospital website and content management system built with N
 - **Secure Authentication:** Cookie-based session management using `iron-session`.
 - **Global Settings Manager:** Edit hospital name, tagline, operating hours, SEO tags, and social links instantly.
 - **Blog & Gallery CMS:** Create, edit, and delete blog posts and gallery photos.
-- **File Uploads:** Integrated with Supabase Storage for seamless media management.
+- **Review Moderation:** A dedicated feedback moderation queue to approve, hide, or permanently delete patient reviews.
+- **File Uploads:** Integrated with Supabase Storage for seamless media management, supporting images up to 4MB natively.
 - **Contact & Appointment Inbox:** View patient submissions with status tracking directly in the dashboard.
 
 ---
@@ -66,9 +68,11 @@ NEXT_PUBLIC_SITE_NAME="Dr. Clinic"
 ```
 
 ### 3. Database Setup (Drizzle)
-Push the schema to your Supabase database:
+Push the schema to your Supabase database. Note that the Supabase Transaction Pooler (port `6543`) does not support DDL statements reliably, so you must use the direct connection (Session Pooler - port `5432`) to execute `push:pg` or migrations!
+
 ```bash
-npx drizzle-kit push:pg
+# Example syntax using the direct Session Pooler connection for schema migrations
+$env:DATABASE_URL="postgresql://<user>:<password>@db.<project>.supabase.co:5432/postgres"; npx drizzle-kit push
 ```
 
 ### 4. Run the Development Server
